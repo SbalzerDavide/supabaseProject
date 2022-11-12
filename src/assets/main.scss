@@ -1,0 +1,56 @@
+@import "./var";
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+  background: var(--background);
+}
+
+button.btn{
+  padding: 5px;
+  border-radius: var(--border-radius);
+  background-color: white;
+  border: 1px solid #444;
+}
+
+input:not([type="checkbox"]){
+  padding: 5px;
+  border-radius: var(--border-radius);
+  background-color: white;
+  border: 1px solid #444;
+}
+
+// theme dark
+.theme-dark {
+  button.btn{
+    background-color: #444;
+    border: 1px solid #888;
+    color: white;
+    }
+  input:not([type="checkbox"]){
+    background-color: #444;
+    border: 1px solid #888;
+    color: white;
+  }
+}
+
+// theme light
+.theme-light {
+  button.btn{
+    background-color: white;
+    border: 1px solid #444;
+    }
+  input:not([type="checkbox"]){
+    background-color: white;
+    border: 1px solid #444;
+  }
+}
+
+
+
+
