@@ -10,7 +10,14 @@ body{
   --opacity-text: rgba(0,0,0, .5);
   --text-color: #222;
   --primary-color: #DC136C;
-  --background-component: #58A4B0;
+
+  --background-hover: #ccc;
+  --background-component: #eee;
+  --background-primary: #58A4B0;
+
+  --border-color: #000;
+  --border-color-light: #555;
+  
   --color-3: #F1B5CB;
   --color-4: #495867;
   --color-5: #FFF689;
@@ -27,6 +34,12 @@ body{
   --primary-color: #DC136C;
 
   --background-component: #333;
+  --background-primary: #333;
+  --background-hover: #333;
+
+  --border-color: #fff;
+  --border-color-light: #555;
+
 
 
 

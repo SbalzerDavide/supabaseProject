@@ -12,13 +12,46 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../components/Login.vue')
+    component: () => import('../views/Login.vue')
   },
   {
-    path: '/home/:session',
+    path: '/home',
     name: 'Home',
     props: true,
-    component: () => import('../components/Home.vue')
+    component: () => import('../views/Home.vue'),
+    children: [
+      {
+        path: 'notes',
+        component: () => import('../views/Notes.vue'),
+        children: [
+          {
+            path: 'new',
+            component: () => import('../views/note/NewNote.vue'),
+          },
+          {
+            path: 'list',
+            component: () => import('../views/note/NotesList.vue'),
+          },
+          {
+            path: 'show',
+            name: 'ShowNote',
+            props: true,
+            component: () => import('../views/note/ShowNote.vue'),
+          },
+        ],    
+      },
+      {
+        path: "manageFood",
+        component: () => import('../views/ManageFood.vue'),
+        children: [
+          {
+            path: 'new',
+            name: "NewFood",
+            component: () => import('../views/manageFood/NewFood.vue'),
+          },
+        ],    
+      }
+    ],
   },
 ]
 

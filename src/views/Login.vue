@@ -1,7 +1,7 @@
 <template>
-  <div class="login">
+  <div class="login d-flex">
     <ThemeSwitch />
-    <div class="login-container">
+    <div class="login-container d-flex-flex-direction-column">
       <h1>login</h1>
       <div v-if="type==='login'" class="login-box">
         <div class="user">
@@ -14,8 +14,7 @@
           >
         </div>
         <div class="password">
-          <!-- <div @click="showLoginPsw=!showLoginPsw" class="show-password"> -->
-          <div @click="manageShowPassword('showLoginPsw')" class="show-password">
+          <div @click="manageShowPassword('showLoginPsw')" class="show-password d-flex">
             <font-awesome-icon v-if="showLoginPsw" icon="fa-solid fa-eye" />
             <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
           </div>
@@ -28,11 +27,11 @@
             @keyup.enter="handleLogin" 
           >
         </div>
-        <div class="remember">
+        <div class="remember d-flex">
           <input type="checkbox" name="remember" id="">
           <label for="remember">Remember me</label>
         </div>
-        <div class="action">
+        <div class="action d-flex">
           <button class="btn" @click="handleLogin">Login</button>
           <a @click="type='signIn'" href="#">register</a>
         </div>
@@ -48,8 +47,7 @@
           >
         </div>
         <div class="password">
-          <!-- <div @click="showSignInPsw=!showSignInPsw" class="show-password"> -->
-          <div @click="manageShowPassword('showSignInPsw')" class="show-password">
+          <div @click="manageShowPassword('showSignInPsw')" class="show-password d-flex">
             <font-awesome-icon v-if="showSignInPsw" icon="fa-solid fa-eye" />
             <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
           </div>
@@ -63,14 +61,14 @@
           >
         </div>
         <div class="password">
-          <!-- <div @click="showSignInRePsw=!showSignInRePsw" class="show-password"> -->
-          <div @click="manageShowPassword('showSignInRePsw')" class="show-password">
+          <div @click="manageShowPassword('showSignInRePsw')" class="show-password d-flex">
             <font-awesome-icon v-if="showSignInRePsw" icon="fa-solid fa-eye" />
             <font-awesome-icon v-else icon="fa-solid fa-eye-slash" />
           </div>
           <label for=""></label>
           <PopupMessage 
             :content="errorPassword" 
+            position="anchored"
             type="error" 
             :show="showError" 
             @showBack="showError=false"
@@ -83,7 +81,7 @@
             @keyup.enter="handleSignIn" 
           >
         </div>
-        <div class="action">
+        <div class="action d-flex">
           <button class="btn" @click="handleSignIn">Sign in</button>
           <a @click="type='login'" href="#">login</a>
         </div>
@@ -94,8 +92,8 @@
 
 <script>
 import { supabase } from "../supabase.js";
-import ThemeSwitch from "./ThemeSwitch.vue"
-import PopupMessage from "./PopupMessage.vue"
+import ThemeSwitch from "../components/ThemeSwitch.vue"
+import PopupMessage from "../components/PopupMessage.vue"
 
 export default {
   name: 'Login',
@@ -196,18 +194,18 @@ export default {
 <style lang="scss"> 
   @import "@/assets/var.scss";
   .login{
-    display: flex;
+    // display: flex;
     justify-content: center;
     padding-top: 50vh;
     .login-container{
-      display: flex;
-      flex-direction: column;
+      // display: flex;
+      // flex-direction: column;
       width: 280px;
       padding: 20px;
-      background: var(--background-component);
+      background: var(--background-primary);
       border-radius: var(--border-radius);
       .action{
-        display: flex;
+        // display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
         a{

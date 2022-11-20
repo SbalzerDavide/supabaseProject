@@ -1,0 +1,312 @@
+<template>
+  <div class="food d-flex flex-direction-column flex-grow">
+    <div class="food-input d-flex flex-direction-column flex-grow">
+      <div class="name">
+        <input 
+          v-if="edit"
+          type="text"
+          v-model="food.name"
+          placeholder="Alimento"
+        >
+        <h3 v-else>{{ food.title }}</h3>
+      </div>
+      <div class="storage">
+        <select v-model="food.storage">
+          <option 
+            v-for="(storage, index) in storages" 
+            :key="index" 
+            :value="storage"
+          >
+            {{ storage }}
+          </option>
+        </select>
+      </div>
+      <div class="deadline">
+        <!-- <h5 @click="openSetDeadline = true">Imposta scadenza</h5> -->
+        <button @click="openSetDeadline = true" class="btn">
+          Imposta scadenza
+        </button>
+        <span>
+          scadenza impostata: {{ deadlineValueFormat }}
+        </span>
+        <div v-show="openSetDeadline" class="radio d-flex flex-direction-column">
+          <!-- valori preimpostati, in cui alla funzione vengono passati i giorni -->
+          <div class="single-radio">
+            <input type="radio" id="3days" name="deadline" value="3" @change="modifyDeadline(false, 3)">
+            <label for="3days">3 days</label>
+          </div>
+          <div class="single-radio">
+            <input type="radio" id="week" name="deadline" value="7" @change="modifyDeadline(false, 7)">
+            <label for="week">One week</label>
+          </div>
+          <!-- Inserrimento dinamico numero di giorni -->
+          <div class="single-radio input-radio">
+            <input type="radio" id="input" name="deadline" :value="inputDays" @change="modifyDeadline(false, inputDays)">
+            <label ref="radioInput" for="input">Tra quanti giorni?
+              <input @change="$refs.radioInput.click()" type="number" v-model="inputDays">
+            </label>
+          </div>
+          <!-- inserimento dinamico da calendario -->
+          <div class="single-radio calendar-radio">
+            <input type="radio" id="calendar" name="deadline" :value="calendarDate" @change="modifyDeadline(true)">
+            <label ref="radioCalendar" for="calendar">Seleziona una data dal calendario
+              <input @change="$refs.radioCalendar.click()" type="date" v-model="calendarDate">
+            </label>
+          </div>
+          <div class="set">
+            <button @click="openSetDeadline = false" class="btn btn-primary">
+              Imposta
+            </button>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="category">
+        <!-- <h5>Categoria alimento</h5> -->
+        <select v-model="food.category" id="">
+          <option value="" disabled selected>Seleziona una categoria</option>
+          <option 
+            v-for="(category, index) in categories" 
+            :key="index" 
+            :value="category"
+          >
+            {{ category }}
+          </option>
+        </select>
+        <!-- possibilità di selezioanre il tipo di alimento, all'inizio magari saranno statici poi darò la possibilità di personalizzarli -->
+
+      </div>
+      <div class="description d-flex flex-direction-column flex-grow">
+        <!-- <label for="description">Aggiungi una descrizione</label> -->
+        <textarea 
+          placeholder="Aggiungi una descrizione" 
+          name="description"
+          v-model="food.description"
+        >
+        </textarea>
+      </div>
+    </div>
+    <div class="food-action">
+      <button class="btn btn-primary" @click="save">
+        Save
+      </button>
+    </div>
+
+  </div>
+</template>
+
+<script>
+import { supabase } from "../../supabase.js";
+
+
+export default{
+  name: "Food",
+  props:{
+    mode: {
+      type: String, 
+      default: "read",
+    },
+    propsFood: Object,
+  },
+  data(){
+    return{
+      user: {},
+      food: Object,
+      openSetDeadline: false,
+      storages: [
+        "frigorifero",
+        "freezer",
+        "dispensa"
+      ],
+      categories: [
+        "frutta",
+        "verdura",
+        "carne",
+        "dolci",
+        "secco"
+      ],
+      deadlineValue: Object,
+      calendarDate: Object,
+      deadlineValueFormat: "",
+      inputDays: 0
+    }
+  },
+  created(){
+    let stringUserData = window.sessionStorage.getItem("userData");
+    if(stringUserData != null){
+      this.user = JSON.parse(stringUserData);
+    }
+    if(this.mode === "new"){
+      this.edit = true;
+      this.food = {
+        name: "",
+        storage: "frigo",
+        // deadline: "",
+        category: "",
+        description: ""
+      }
+    } else if(this.type === "read"){
+      this.food = this.propsFood;
+    }
+    this.deadlineValue =  new Date();
+    
+  },
+  methods:{
+    modifyDeadline(calendar, days){
+      let date;
+      if(calendar){
+        console.log(calendar);
+        date = new Date(this.calendarDate);
+      } else{
+        date = new Date();
+        date.setDate(date.getDate() + parseInt(days));
+      }
+      this.deadlineValue = date;
+      this.deadlineValueFormat = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`;
+      console.log(this.deadlineValueFormat);
+
+    },
+    save(){
+      let vue = this;
+      if(this.food.name !== ""){
+        if("id" in this.food){
+          // alimento già esistente quindi faccio upsert
+          let updateFood = {
+            user_id: this.user.id,
+            name: this.food.name,
+            storage: this.food.storage,
+            category: this.food.category,
+            description: this.food.description,
+          }
+          supabase
+            .from("food")
+            .update(updateFood)
+            .eq('id', this.food.id)
+            .then((data)=>{
+              if("data" in data && data.data.length > 0){
+                this.$emit('saved', {
+                  message: "L'alimento è stato salvata correttamente",
+                  type: "success"
+                })
+              }
+            })
+            .catch((error)=>{
+              console.log(error);
+            })
+
+        } else{
+          // alimento nuovo quindi faccio insert
+          let newFood = {
+            user_id: this.user.id,
+            name: this.food.name,
+            storage: this.food.storage,
+            category: this.food.category,
+            description: this.food.description,
+          }
+          // inserire deadline solo se è stata impostata
+          // questo controllo non funziona
+          if(this.deadlineValue !== {}){
+            newFood.deadline = this.deadlineValue;
+          }
+          supabase
+            .from("food")
+            .insert(newFood)
+            .select()
+            .then((data)=>{
+              if("data" in data && data.data.length > 0){
+                vue.food.id = data.data[0].id;
+                this.$emit('saved', {
+                  message: "L'alimento è stato salvata correttamente",
+                  type: "success"
+                })
+              }
+            })
+            .catch((err)=>{
+              console.log(err);
+              this.$emit('saved', {
+                message: "Attenzione! Errore salvataggio alimento",
+                type: "error"
+              })
+            })
+        }
+      }
+    }
+
+
+  }
+}
+</script>
+
+<style lang="scss">
+  .food-input{
+    &>div{
+      margin: 10px 0;
+    }
+    input[type=radio]{
+      margin-right: 8px;
+    }
+    .name{
+      input{
+        width: 100%;
+      }
+    }
+    .storage{
+      select{
+        width: 100%;
+      }
+    }
+    .category{
+      select{
+        width: 100%;
+      }
+    }
+    .deadline{
+      h5{
+        margin-bottom: 10px;
+      }
+      .single-radio{
+        position: relative;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        label{
+          input{
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 140px;
+          }
+        }
+      }
+      .radio{
+        position: fixed;
+        top: 80px;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background-color: var(--background);
+      }
+      .set{
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+
+      }
+    }
+    .description{
+      textarea{
+        width: 100%;
+        padding: 10px;
+        flex-grow: 1;
+      }
+    }
+  }
+  .food-action{
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>

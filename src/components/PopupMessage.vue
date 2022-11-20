@@ -3,7 +3,7 @@
     <div 
       v-show="internaShow" 
       class="popup-message"
-      :class="type"
+      :class="`${type} position-${position} `"
     >
         {{ content }}
       <div class="cloud-arrow"></div>
@@ -27,6 +27,10 @@ export default {
     content: {
       type: String,
       default: ""
+    },
+    position:{
+      type: String,
+      default: "central"
     }
   },
   data(){
@@ -63,25 +67,37 @@ export default {
 
 <style lang="scss">
   .popup-message{
-    position: absolute;
     padding: 5px;
-    bottom: calc(100% + 5px);
-    left: 10px;
     border-radius: var(--border-radius);
+    .cloud-arrow{
+      display: none;
+    }
+    &.position-anchored{
+      position: absolute;
+      left: 10px;
+      bottom: calc(100% + 5px);
+      .cloud-arrow{
+        display: inline-block;
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        left: 6px;
+        transform: rotate(45deg);
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        bottom: -5px;
+        border-radius: 2px;
+      }      
+    }
+    &.position-center{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
     &.error{
       background-color: #f8d7da !important;
       color: #721c24;
-    }
-    .cloud-arrow{
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      left: 6px;
-      transform: rotate(45deg);
-      border-style: solid;
-      border-width: 0 1px 1px 0;
-      bottom: -5px;
-      border-radius: 2px;
     }
   }
   .theme-light{

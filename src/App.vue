@@ -47,11 +47,6 @@ export default {
       })
   },
   methods:{
-    logout(e){
-      if(e){
-        this.session = null;
-      }
-    },
     login(e){
       let vue = this;
       console.log("sono nell apgina home dopo login");

@@ -1,9 +1,9 @@
 <template>
-  <div class="change-theme">
+  <div class="change-theme d-flex">
     <div :class="theme==='light' ? 'active' : ''">
       <font-awesome-icon @click="changeTheme('light')" icon="fa-solid fa-sun" />
     </div>
-    <div class="switch" @click="changeTheme('')">
+    <div class="switch d-flex" @click="changeTheme('')">
       <div class="ball-switch"></div>
     </div>
     <div :class="theme==='dark' ? 'active' : ''" >
@@ -55,13 +55,16 @@ export default {
 <style lang="scss">
     .change-theme{
       position: fixed;
-      top: 20px;
+      top: 40px;
+      transform: translateY(-50%);
       right: 15%;
-      display: flex;
-      display: flex;
+      // display: flex;
       align-items: center;
+      svg{
+        cursor: pointer;
+      }
       .switch{
-        display: flex;
+        // display: flex;
         position: relative;
         width: 52px;
         height: 28px;
@@ -70,6 +73,7 @@ export default {
         border-radius: 14px;
         justify-content: space-between;
         background: var(--opacity-layer);
+        cursor: pointer;
       }
       .ball-switch{
         position: absolute;
