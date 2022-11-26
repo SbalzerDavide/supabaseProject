@@ -49,6 +49,21 @@ const routes = [
             name: "NewFood",
             component: () => import('../views/manageFood/NewFood.vue'),
           },
+          {
+            path: 'shoppinglist',
+            name: "ShoppingList",
+            component: () => import('../views/manageFood/ShoppingList.vue'),
+          },
+          {
+            path: 'storagelist',
+            name: "StorageList",
+            component: () => import('../views/manageFood/StorageList.vue'),
+          },
+          {
+            path: 'garbagelist',
+            name: "GarbageList",
+            component: () => import('../views/manageFood/GarbageList.vue'),
+          },
         ],    
       }
     ],

@@ -12,29 +12,34 @@
     <div class="app-navigation d-flex">
       <div 
         class="app-navigazione-element d-flex"
+        :class="activePanel == 'new' ? 'active' : ''"
         @click="goTo('new')"
       >
         <font-awesome-icon icon="fa-solid fa-plus" />
       </div>
       <div 
         class="app-navigazione-element d-flex"
-        @click="goTo('refrigerator')"
+        :class="activePanel == 'storagelist' ? 'active' : ''"
+        @click="goTo('storagelist')"
       >
-        <!-- refrigerator per qualche motivo non funziona -->
-        <!-- <font-awesome-icon icon="fa-solid fa-refrigerator" /> -->
         <font-awesome-icon icon="fa-solid fa-box" />
       </div>
       <div 
         class="app-navigazione-element d-flex"
-        @click="goTo('freezer')"
+        :class="activePanel == 'shoppinglist' ? 'active' : ''"
+        @click="goTo('shoppinglist')"
       >
-        <font-awesome-icon icon="fa-solid fa-snowflake" /> 
+        <font-awesome-icon icon="fa-solid fa-cart-shopping" />
       </div>
       <div 
         class="app-navigazione-element d-flex"
-        @click="goTo('list')"
+        :class="activePanel == 'garbagelist' ? 'active' : ''"
+        @click="goTo('garbagelist')"
       >
-        <font-awesome-icon icon="fa-solid fa-cart-shopping" />
+        <font-awesome-icon icon="fa-solid fa-trash" />
+      </div>
+      <div class="app-navigazione-element d-flex">
+        <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />      
       </div>
     </div>
   </div>
@@ -54,7 +59,8 @@ export default {
     return{
       user: {},
       main: true,
-      default: "new"
+      default: "new",
+      activePanel: "new"
     }
   },
   created(){
@@ -70,6 +76,11 @@ export default {
     }
 
   },
+  updated(){
+    console.log("updated");
+    let path = window.location.href;
+    this.activePanel = path.split("/")[path.split("/").length - 1];
+  },  
   methods:{
     goTo(name){
       this.$router.push({ path: `/home/manageFood/${name}` });
@@ -95,9 +106,14 @@ export default {
       .app-navigazione-element{
         justify-content: center;
         align-items: center;
+        color: var(--opacity-text);
         cursor: pointer;
+        &.active{
+          color: var(--text-color);
+        }
         svg{
           font-size: 28px;
+          padding: 0 8px;
         }
       }
     }
