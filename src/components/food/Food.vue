@@ -1,6 +1,22 @@
 <template>
   <div class="food d-flex flex-direction-column flex-grow">
     <div class="food-input d-flex flex-direction-column flex-grow">
+      <div class="mode d-flex">
+        <button 
+          class="btn"
+          :class="food.shoppingList == true ? 'active' : ''"
+          @click="food.shoppingList = true"
+        >
+          Shopping list
+        </button>
+        <button 
+          class="btn"
+          :class="food.shoppingList == false ? 'active' : ''"
+          @click="food.shoppingList = false"
+        >
+          Storage
+        </button>
+      </div>
       <div class="name-quantity d-flex">
         <div class="name">
           <input 
@@ -20,7 +36,7 @@
           >
         </div>
       </div>
-      <div class="storage">
+      <div v-show="!food.shoppingList" class="storage">
         <select @change="checkStorage" v-model="food.storage">
           <option 
             v-for="(storage, index) in storages" 
@@ -124,8 +140,9 @@ export default{
       user: {},
       food: Object,
       openSetDeadline: false,
+      // activeMode: "shoppingList",
       storages: [
-        "Lista della spesa",
+        // "Lista della spesa",
         "Frigorifero",
         "Freezer",
         "Dispensa"
@@ -152,7 +169,8 @@ export default{
       this.edit = true;
       this.food = {
         name: "",
-        storage: "Lista della spesa",
+        // storage: "Lista della spesa",
+        storage: "Frigorifero",
         shoppingList: true,
         quantity: 1,
         category: "",
@@ -193,7 +211,16 @@ export default{
         if("id" in this.food){
           // alimento già esistente quindi faccio upsert
           let updateFood = this.food;
-          if(this.food.shoppingList){
+
+          if(!("deadline" in updateFood)){
+            this.$emit('saved', {
+              message: "Inserire data di scadenza",
+              type: "warning"
+            })
+            return;
+          }
+
+          if(updateFood.shoppingList == true){
             delete updateFood.storage;
           }
           updateFood.user_id = this.user.id;
@@ -217,7 +244,15 @@ export default{
           // alimento nuovo quindi faccio insert
           let newFood = this.food;
           newFood.user_id = this.user.id;
-          if(this.food.shoppingList){
+          if(!("deadline" in newFood)){
+            this.$emit('saved', {
+              message: "Inserire data di scadenza",
+              type: "warning"
+            })
+            console.log("manca deadline");
+            return;
+          }
+          if(newFood.shoppingList == true){
             delete newFood.storage;
           }
 
@@ -256,6 +291,16 @@ export default{
 </script>
 
 <style lang="scss">
+  .mode{
+    justify-content: space-between;
+    button{
+      width: 40%;
+      &.active{
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+    }  
+  }
   .food-input{
     &>div{
       margin: 10px 0;
@@ -340,5 +385,8 @@ export default{
   .food-action{
     display: flex;
     justify-content: flex-end;
+    button{
+      width: 45%;
+    }
   }
 </style>

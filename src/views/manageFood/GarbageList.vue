@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="date">
-         - {{ food.garbageDate }}
+        {{ food.garbageDate }}
       </div>      
       </li>
     </ul>
@@ -104,8 +104,9 @@ export default {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        background-color: var(--background-primary);
-        color: var(--contrast-primary);
+        background-color: var(--color-3);
+        color: black;
+        // color: var(--contrast-primary);
       }
     }
   }

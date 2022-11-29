@@ -7,7 +7,7 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
-    <h1>Add new</h1>
+    <!-- <h1>Add new</h1> -->
     <div class="new-food-element d-flex flex-direction-column flex-grow">
       <Food 
         mode="new"

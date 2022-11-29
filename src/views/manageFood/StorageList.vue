@@ -12,12 +12,18 @@
 
       </div>
       <div class="panel-delete d-flex flex-direction-column">
-        <button class="btn btn-primary" @click="eatenFood">
-          Alimento consumato
-        </button>
-        <button class="btn" @click="toGarbage">
-          Alimento buttato
-        </button>
+        <div class="choice d-flex">
+          <button class="btn btn-primary" @click="eatenFood">
+            Alimento consumato
+          </button>
+          <button class="btn" @click="toGarbage">
+            Alimento buttato
+          </button>
+        </div>
+        <div class="addToShoppingList">
+          <label for="addToShoppingList">Inserisci a lista della spesa</label>
+          <input type="checkbox" name="addToShoppingList" id="addToShoppingList">
+        </div>
       </div>
 
     </div>
@@ -321,12 +327,30 @@ export default {
       .panel-delete{
         position: absolute;
         width: 80%;
-        height: 140px;
+        height: 200px;
         background-color: var(--background-component);
         border-radius: var(--border-radius);
         border: 1px solid var(--border-color);
         padding: 30px;
         justify-content: space-between;
+      }
+      .choice{
+        justify-content: space-between;
+        button{
+          height: 60px;
+          width: 40%;
+        }
+      }
+      .addToShoppingList{
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        input[type=checkbox]{
+          width: 20px;
+          height: 20px;
+          margin-left: 8px;
+        }
       }
     }
   }
