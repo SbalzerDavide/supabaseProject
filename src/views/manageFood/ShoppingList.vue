@@ -65,7 +65,7 @@
           <button class="btn">
             Annulla
           </button>
-          <button @click="moveToStore(actualEl)" class="btn btn-primary">
+          <button @click="moveToStoreNew(actualEl)" class="btn btn-primary">
             Move to store
           </button>
         </div>
@@ -84,7 +84,7 @@
         :key="index"
       >
         <div class="d-flex">
-          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :id="el.name" type="checkbox">
+          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
           <label :for="el.name">{{ el.name }}</label>
           <!-- <div class="list-name">
             {{ el.name }}
@@ -97,10 +97,9 @@
           <div @click="deleteEl(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div>
-          <div @click="store(index)" class="toStorage">
+          <!-- <div @click="storePanel(index)" class="toStorage">
             <font-awesome-icon icon="fa-solid fa-box" />
-            <!-- <font-awesome-icon icon="fa-solid fa-house" /> -->
-          </div>
+          </div> -->
         </div>
       </li>
     </ul>
@@ -126,7 +125,8 @@ export default {
       user: {},
       shoppingList: [],
       actualEl: Object,
-      selected: 0,
+      // selected: 0,
+      selectedList: [],
       panelStore: false,
       storages: [
         "Frigorifero",
@@ -172,10 +172,38 @@ export default {
         })
     },
     multipleStore(){
-      if(this.selected > 0){
+      if(this.selectedList.length > 0){
         let selectedEl = this.shoppingList.filter(el=>el.selected);
         console.log(selectedEl);
+        this.panelStore = true;
+        this.managePanel();
+        // selectedEl.forEach(el=>{
+        //   console.log(el);
+        // })
       }
+    },
+    managePanel(){
+      if(this.selectedList.length > 0){
+        console.log("ho ancora elementi nella lista");
+        // quello visualizzato è sempre il primo quindi piano piano li tolgo 
+        this.actualEl = this.shoppingList[this.selectedList[0]];
+        console.log(this.actualEl);
+      } else{
+        console.log("non ho più elementi da visualizzare quindi chiudo pannello");
+        this.panelStore = false;
+        // tolgo anche tutti gli elementi selezioanti
+        // cioè annullo selezione delle checkbox
+        // mentro l'array selectedList dovrebbe già essere vuoto
+      }
+    },
+    moveToStoreNew(){
+      // devo mostrare il pannello per ogni elemento presente nella lista
+      console.log("salvo elemento");
+      console.log(this.actualEl);
+      this.selectedList.splice(0, 1);
+      this.managePanel();
+
+
     },
     moveToStore(el){
       console.log(el);
@@ -196,7 +224,7 @@ export default {
             // a meno che non ci siano altri elemtni nella lista a spostare
             // ma non c'è ancora questa logica
             vue.shoppingList.splice(vue.selectedIndex, 1);
-            vue.panelStore = false;
+            // vue.panelStore = false;
 
             // messaggi opopup per avvenuto salavatggio
             vue.popupMessage = `Alimento correttamente spostato in ${data.data[0].storage}`;
@@ -211,7 +239,7 @@ export default {
             vue.triggerPopup = true;
         })
     },
-    store(index){
+    storePanel(index){
       this.selectedIndex = index;
       this.panelStore = true;
       let obj = this.shoppingList[index];
@@ -236,11 +264,17 @@ export default {
       this.panelStore = false;
     },
     changeCheckbox(e){
+      let index = e.target.getAttribute("index");
       if(e.target.checked){
-        this.selected++;
+        // this.selected++;
+        this.selectedList.push(index);
       } else if(!e.target.checked){
-        this.selected--;
+        if(this.selectedList.indexOf(index)>= 0){
+          this.selectedList.splice(this.selectedList.indexOf(index), 1)
+        }
+        // this.selected--;
       }
+      console.log(this.selectedList);
     },
     getShoppingList(){
       return new Promise((resolve, reject)=>{

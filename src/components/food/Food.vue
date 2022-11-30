@@ -244,7 +244,7 @@ export default{
           // alimento nuovo quindi faccio insert
           let newFood = this.food;
           newFood.user_id = this.user.id;
-          if(!("deadline" in newFood)){
+          if(!newFood.shoppingList && !("deadline" in newFood)){
             this.$emit('saved', {
               message: "Inserire data di scadenza",
               type: "warning"
