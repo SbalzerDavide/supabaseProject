@@ -21,9 +21,11 @@
         <div class="name">
           <input 
             v-if="edit"
+            ref="inputName"
             type="text"
             v-model="food.name"
             placeholder="Alimento"
+            @keyup.enter="save"
           >
           <h3 v-else>{{ food.title }}</h3>
         </div>
@@ -114,7 +116,10 @@
       </div>
     </div>
     <div class="food-action">
-      <button class="btn btn-primary" @click="save">
+      <button class="btn btn-primary" 
+        @click="save"
+        @keyup.enter="save"
+      >
         Save
       </button>
     </div>
@@ -272,6 +277,17 @@ export default{
                   message: "L'alimento è stato salvata correttamente",
                   type: "success"
                 })
+                // azzero dati  di inserimento per poter aggiungere un altro alimento
+                // vue.food.name = "";
+                vue.food = {
+                  name: "",
+                  storage: "Frigorifero",
+                  shoppingList: true,
+                  quantity: 1,
+                  category: "",
+                  description: ""
+                }
+                vue.$refs.inputName.focus();
               }
             })
             .catch((err)=>{

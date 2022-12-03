@@ -1,9 +1,8 @@
 <template>
   <div>
     <div 
-      v-show="internaShow" 
       class="popup-message"
-      :class="`${type} position-${position} `"
+      :class="`${type} position-${position} ${internalShow}`"
     >
         {{ content }}
       <div class="cloud-arrow"></div>
@@ -30,7 +29,7 @@ export default {
     },
     position:{
       type: String,
-      default: "central"
+      default: "bottom"
     }
   },
   data(){
@@ -41,7 +40,7 @@ export default {
     
   },
   computed: {
-    internaShow: {
+    internalShow: {
       // getter
       get() {
         if(this.show){
@@ -58,8 +57,8 @@ export default {
   methods:{
     countDown(){
       setTimeout(() => {
-        this.internaShow = false;
-      }, 6000);
+        this.internalShow = false;
+      }, 5000);
     }
   }
 }
@@ -67,6 +66,9 @@ export default {
 
 <style lang="scss">
   .popup-message{
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
     padding: 5px;
     border-radius: var(--border-radius);
     .cloud-arrow{
@@ -90,10 +92,28 @@ export default {
       }      
     }
     &.position-center{
+      bottom: 50%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      z-index: 1;
+      &.false{
+        display: none;
+      }
+      &.true{
+        display: inline-block;
+      }
+
+    }
+    &.position-bottom{
       position: fixed;
-      top: 50%;
+      bottom: -80px;
       left: 50%;
       transform: translate(-50%, -50%);
+      z-index: 1;
+      transition: all 1s;
+      &.true{
+        bottom: 40px;
+      }
     }
     &.error{
       background-color: #f8d7da !important;

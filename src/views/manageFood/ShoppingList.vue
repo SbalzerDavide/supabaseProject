@@ -2,13 +2,17 @@
   <div class="shopping-list d-flex flex-direction-column flex-grow">
     <PopupMessage 
       :content="popupMessage" 
-      position="center"
+      position="bottom"
       :type="popupType" 
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
 
-    <div v-show="panelStore" class="panel-store d-flex flex-direction-column">
+    <!-- <div v-show="panelStore" class="panel-store d-flex flex-direction-column"> -->
+    <div 
+      class="panel-store d-flex flex-direction-column" 
+      :class="panelStore ? 'show' : 'hide'"
+    >
       <div class="close" @click="closePanelStore">
         <font-awesome-icon icon="fa-solid fa-xmark" />
       </div>
@@ -56,16 +60,12 @@
               </select>
             </div>
           </div>
-          <!-- <p>Qui devo contenere i campi che mi permettano di aggiungere le informazioni minime e necessarie per spostare un elemento da shopping list a storeage</p>
-          <p>Una volta dato l'ok passo a quello successivo della lista, se presente, oppure chiudo il pannello</p>
-          <p>mi darà anche la possibilità di applicare la stessa scelta a tutti quelli successivi, se fleggato l'appostito chck</p>
-          <p>Il salvataggio a db avverrà solo dopo aver accetatto</p> -->
         </div>
         <div class="action d-flex">
-          <button class="btn">
+          <button @click="cancelMoveToStore" class="btn">
             Annulla
           </button>
-          <button @click="moveToStoreNew(actualEl)" class="btn btn-primary">
+          <button @click="moveToStoreNew" class="btn btn-primary">
             Move to store
           </button>
         </div>
@@ -86,9 +86,6 @@
         <div class="d-flex">
           <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
           <label :for="el.name">{{ el.name }}</label>
-          <!-- <div class="list-name">
-            {{ el.name }}
-          </div> -->
         </div>
         <div class="operation d-flex">
           <div class="edit">
@@ -109,8 +106,6 @@
 <script>
 import { supabase } from '../../supabase';
 import PopupMessage from "../../components/PopupMessage.vue";
-// import Food from "../../components/food/Food.vue";
-
 
 
 export default {
@@ -125,7 +120,6 @@ export default {
       user: {},
       shoppingList: [],
       actualEl: Object,
-      // selected: 0,
       selectedList: [],
       panelStore: false,
       storages: [
@@ -133,7 +127,7 @@ export default {
         "Freezer",
         "Dispensa"
       ],
-      deadlineValue: Object,
+      deadlineValue: "",
       calendarDate: Object,
       deadlineValueFormat: "",
       inputDays: 0,
@@ -173,70 +167,72 @@ export default {
     },
     multipleStore(){
       if(this.selectedList.length > 0){
-        let selectedEl = this.shoppingList.filter(el=>el.selected);
-        console.log(selectedEl);
         this.panelStore = true;
         this.managePanel();
-        // selectedEl.forEach(el=>{
-        //   console.log(el);
-        // })
       }
     },
     managePanel(){
+      let vue = this;
       if(this.selectedList.length > 0){
-        console.log("ho ancora elementi nella lista");
         // quello visualizzato è sempre il primo quindi piano piano li tolgo 
         this.actualEl = this.shoppingList[this.selectedList[0]];
-        console.log(this.actualEl);
+        this.actualEl.storage = this.storages[0];
       } else{
-        console.log("non ho più elementi da visualizzare quindi chiudo pannello");
         this.panelStore = false;
-        // tolgo anche tutti gli elementi selezioanti
-        // cioè annullo selezione delle checkbox
-        // mentro l'array selectedList dovrebbe già essere vuoto
+        // faccio  chiamata di rete per sapere cos'è rimasto in shopping list
+        vue.getShoppingList().then((data)=>{
+          vue.shoppingList = data;
+          vue.shoppingList.forEach(el=>{
+            el.selected = false;
+          })
+        })
       }
     },
-    moveToStoreNew(){
-      // devo mostrare il pannello per ogni elemento presente nella lista
-      console.log("salvo elemento");
-      console.log(this.actualEl);
+    cancelMoveToStore(){
       this.selectedList.splice(0, 1);
       this.managePanel();
-
-
     },
-    moveToStore(el){
-      console.log(el);
+    moveToStoreNew(){
       let vue = this;
+      if(this.deadlineValue === ""){
+        vue.popupMessage = `Inserire una data di scadenza`;
+        vue.popupType = "error";
+        vue.triggerPopup = true;
+        return;
+      }
       let newStore = {
-        storage: el.storage,
+        storage: this.actualEl.storage,
         deadline: this.deadlineValue,
         shoppingList: false,
       }
+      console.log(this.deadlineValue);
+      let saved = false;
       supabase
         .from("food")
         .update(newStore)
-        .eq('id', el.id)
+        .eq('id', this.actualEl.id)
         .select()
         .then((data)=>{
           if("data" in data && data.data.length > 0){
-            // se andata a buon fine aggiorno la listo e chiudo il pannello,
-            // a meno che non ci siano altri elemtni nella lista a spostare
-            // ma non c'è ancora questa logica
-            vue.shoppingList.splice(vue.selectedIndex, 1);
-            // vue.panelStore = false;
+            saved = true;
+            vue.selectedList.splice(0, 1);
 
-            // messaggi opopup per avvenuto salavatggio
+            // messaggi popup per avvenuto salavatggio
             vue.popupMessage = `Alimento correttamente spostato in ${data.data[0].storage}`;
             vue.popupType = "success";
             vue.triggerPopup = true;
+      
+            this.managePanel();
           }
         })
         .catch((error)=>{
-          console.log(error);
-            vue.popupMessage = `Attensione, errore nello spostemento}`;
+          // sono sicuro che non sia stato salvato se passa dalla catch e saved è rimasto === false
+          if(!saved){
+            console.log(error);
+            vue.popupMessage = `Attensione, errore nello spostemento`;
             vue.popupType = "error";
             vue.triggerPopup = true;
+          }
         })
     },
     storePanel(index){
@@ -324,13 +320,23 @@ export default {
     }
     .panel-store{
       position: fixed;
-      top: 80px;
-      bottom: 60px;
-      right: 0;
-      left: 0;
-      padding: 12px;
       padding-top: 20px;
       background-color: var(--background);
+      // transition: all .2s;
+      &.show{
+        top: 80px;
+        bottom: 60px;
+        right: 0;
+        left: 0;
+        padding: 12px;
+      }
+      &.hide{
+        top: 50%;
+        bottom: 50%;
+        left: 50%;
+        right: 50%;
+        overflow: hidden;
+      }
       h2{
         text-align: center;
         padding: 8px;

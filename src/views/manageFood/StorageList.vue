@@ -7,7 +7,10 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
-    <div v-show="panelDelete" class="panel-delete-background">
+    <div 
+      class="panel-delete-background" 
+      :class="panelDelete ? 'show' : 'hide'"
+    >
       <div class="blurred" @click="panelDelete = false">
 
       </div>
@@ -62,9 +65,9 @@
           </div>
         </div>
         <div class="operation d-flex">
-          <div class="edit">
+          <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
-          </div>
+          </div> -->
           <div @click="deleteFood(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div>
@@ -138,7 +141,9 @@ export default {
         this.storageList = this.storageListOriginal;
       } else{
         this.storageList = this.storageListOriginal.filter(el=>{
-          return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
+          if("storage" in el && el.storage !== null){
+            return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
+          }
         });
       }
     },
@@ -317,23 +322,50 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
       .blurred{
-        width: 100%;
         height: 100%;
         position: absolute;
         top: 0;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(0px);
+      }
+      &.show{
+        z-index: 1;
+        .blurred{
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          backdrop-filter: blur(5px);
+        }
+        .panel-delete{
+          width: 80%;
+          height: 200px;
+          padding: 30px;
+        }
+      }
+      &.hide{
+        z-index: -1;
+        .blurred{
+          top: 50%;
+          bottom: 50%;
+          left: 50%;
+          right: 50%;
+          overflow: hidden;
+        }
+        .panel-delete{
+          width: 0%;
+          height: 0;
+        }
+
       }
       .panel-delete{
         position: absolute;
-        width: 80%;
-        height: 200px;
         background-color: var(--background-component);
         border-radius: var(--border-radius);
         border: 1px solid var(--border-color);
-        padding: 30px;
         justify-content: space-between;
+        transition: all .2s;
+        overflow: hidden;
       }
       .choice{
         justify-content: space-between;
