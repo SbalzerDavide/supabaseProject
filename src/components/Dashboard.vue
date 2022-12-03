@@ -10,16 +10,26 @@
         {{ app.title }}
       </div>
     </div>
+  <!-- <b-button v-b-modal.modal-1>Launch demo modal</b-button> -->
+  <button @click="showModal" class="btn">apri modal</button>
+  <b-modal ref="my-modal" id="modal" title="BootstrapVue">
+    <p class="my-4">Hello from modal!</p>
+  </b-modal>
   </div>
 </template>
 
 <script>
 // import { supabase } from "../supabase.js";
+// import { ModalPlugin } from 'bootstrap-vue'
+import { BModal } from 'bootstrap-vue'
 
 
 
 export default {
   name: 'App',
+  components: {
+    BModal,
+  },
   data(){
     return{
       appList: [
@@ -41,6 +51,10 @@ export default {
   mounted(){
   },
   methods:{
+    showModal(){
+      console.log("modal");
+      this.$refs['my-modal'].show()
+    },
     goTo(name){
       this.$emit("firstPageEvent", false);
       this.$router.push({ path: `/home/${name}` });
