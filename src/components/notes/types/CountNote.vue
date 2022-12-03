@@ -114,7 +114,7 @@ export default {
             .then((data)=>{
               console.log(data);
               this.$emit('saved', {
-                message: "La nota è stata salvata correttamente",
+                message: "La nota è stata salvato correttamente",
                 type: "success"
               })
             })
@@ -148,7 +148,6 @@ export default {
                 message: "Attenzione! Errore salvataggio nota",
                 type: "error"
               })
-              // richiamo componente per messaggio errore salvataggio
             })
         }
       }

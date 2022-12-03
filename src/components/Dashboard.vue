@@ -10,7 +10,6 @@
         {{ app.title }}
       </div>
     </div>
-
   </div>
 </template>
 

@@ -137,7 +137,6 @@ export default {
             .insert(newNote)
             .select()
             .then((data)=>{
-              // richiamo componente per messaggio successo salvataggio
               vue.note.id = data.data[0].id;
               this.$emit('saved', {
                 message: "La nota è stata salvata correttamente",
@@ -150,7 +149,6 @@ export default {
                 message: "Attenzione! Errore salvataggio nota",
                 type: "error"
               })
-              // richiamo componente per messaggio errore salvataggio
             })
         }
       }

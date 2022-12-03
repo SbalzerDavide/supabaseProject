@@ -236,7 +236,7 @@ export default{
             .then((data)=>{
               if("data" in data && data.data.length > 0){
                 this.$emit('saved', {
-                  message: "L'alimento è stato salvata correttamente",
+                  message: "L'alimento è stato salvato correttamente",
                   type: "success"
                 })
               }
@@ -274,7 +274,7 @@ export default{
               if("data" in data && data.data.length > 0){
                 vue.food.id = data.data[0].id;
                 this.$emit('saved', {
-                  message: "L'alimento è stato salvata correttamente",
+                  message: "L'alimento è stato salvato correttamente",
                   type: "success"
                 })
                 // azzero dati  di inserimento per poter aggiungere un altro alimento

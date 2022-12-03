@@ -252,9 +252,13 @@ export default {
   .storage-list{
     .header{
       justify-content: space-between;
+      align-items: center;
       padding: 0 12px;
+      div{
+        align-items: center;
+      }
       button{
-        width: 80px;
+        width: 120px;
       }
       select{
         margin-left: 8px;
@@ -302,6 +306,7 @@ export default {
       input[type=checkbox]{
         margin-right: 8px;
         width: 20px;
+        height: 20px;
       }
       .operation{
         cursor: pointer;

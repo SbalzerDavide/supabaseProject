@@ -97,6 +97,7 @@ export default {
     .app-navigation{
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
       height: 60px;
       padding: 0 12px;

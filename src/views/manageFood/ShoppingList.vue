@@ -9,6 +9,37 @@
     />
 
     <!-- <div v-show="panelStore" class="panel-store d-flex flex-direction-column"> -->
+    <div v-show="selectedList.length > 0" class="shopping-list-appbar">
+      <div @click="removeSelection" class="back">
+        <font-awesome-icon icon="fa-solid fa-arrow-left" />
+      </div>
+      <div class="action">
+        <button @click="multipleDelete" class="btn btn-primary">
+          Delete
+          <font-awesome-icon icon="fa-solid fa-trash" />
+        </button>
+
+        <button @click="multipleStore" class="btn btn-primary">
+          Store
+          <font-awesome-icon icon="fa-solid fa-box" />
+        </button>
+      </div>
+    </div>
+    <div 
+      class="panel-delete d-flex flex-direction-column"
+      :class="panelStore ? 'show' : 'hide'"
+    >
+      <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
+      <div class="action d-flex">
+        <button class="btn">
+          Annulla
+        </button>
+        <button class="btn btn-primary">
+          Conferma
+        </button>
+
+      </div>
+    </div>
     <div 
       class="panel-store d-flex flex-direction-column" 
       :class="panelStore ? 'show' : 'hide'"
@@ -41,7 +72,7 @@
             <!-- inserimento dinamico da calendario -->
             <div class="single-radio calendar-radio">
               <input type="radio" id="calendar" name="deadline" :value="calendarDate" @change="modifyDeadline(true)">
-              <label ref="radioCalendar" for="calendar">Seleziona una data dal calendario
+              <label ref="radioCalendar" for="calendar">Seleziona una data
                 <input @change="modifyDeadline(true, null, 'radioCalendar')" type="date" v-model="calendarDate">
               </label>
             </div>
@@ -72,10 +103,10 @@
     </div>
     <div class="header d-flex">
       <h1>shopping list</h1>
-      <button @click="multipleStore" class="btn btn-primary">
+      <!-- <button @click="multipleStore" class="btn btn-primary">
         Store
         <font-awesome-icon icon="fa-solid fa-box" />
-      </button>
+      </button> -->
     </div>
     <ul>
       <li 
@@ -164,6 +195,15 @@ export default {
         .catch((err)=>{
           console.log(err);
         })
+    },
+    removeSelection(){
+      this.selectedList = [];
+      this.shoppingList.forEach(el => {
+        el.selected = false;
+      });
+    },
+    multipleDelete(){
+      console.log("multiple delete");
     },
     multipleStore(){
       if(this.selectedList.length > 0){
@@ -294,6 +334,32 @@ export default {
 </script>
 
 <style lang="scss">
+  .shopping-list-appbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--background-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    .back{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      svg{
+        height: 40px;
+      }
+    }
+    button{
+      margin-left: 20px;
+      height: 45px;
+      width: 120px;
+      font-size: 20px;
+    }
+  }
   .shopping-list{
     .header{
       justify-content: space-between;
@@ -309,12 +375,22 @@ export default {
       input[type=checkbox]{
         margin-right: 8px;
         width: 20px;
+        height: 20px;
       }
       .operation{
         cursor: pointer;
         svg{
           font-size: 20px;
           margin: 0 8px;
+        }
+      }
+    }
+    .panel-delete{
+      padding: 20px;
+      .action{
+        justify-content: space-between;
+        button{
+          width: 40%;
         }
       }
     }
@@ -341,6 +417,7 @@ export default {
         text-align: center;
         padding: 8px;
         color: var(--primary-color);
+        font-size: 25px;
       }
       .close{
         position: absolute;
@@ -351,14 +428,17 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 25px;
+        svg{
+          height: 30px;
+        }
+        // font-size: 25px;
       }
       .deadline{
         margin: 8px 0;
       }
       .single-radio{
         position: relative;
-        height: 40px;
+        height: 50px;
         display: flex;
         align-items: center;
         label{
@@ -378,8 +458,9 @@ export default {
       }
       .storage{
         div{
-          height: 40px;
+          height: 50px;
           display: flex;
+          margin-top: 8px;
           align-items: center;
         }
         select{
@@ -390,7 +471,7 @@ export default {
       .action{
         justify-content: flex-end;
         button{
-          width: 100px;
+          width: 150px;
           margin-left: 20px;
         }
       }
