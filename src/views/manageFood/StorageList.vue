@@ -11,9 +11,7 @@
       class="panel-delete-background" 
       :class="panelDelete ? 'show' : 'hide'"
     >
-      <div class="blurred" @click="panelDelete = false">
-
-      </div>
+      <div class="blurred" @click="panelDelete = false"></div>
       <div class="panel-delete d-flex flex-direction-column">
         <div class="choice d-flex">
           <button class="btn btn-primary" @click="eatenFood">

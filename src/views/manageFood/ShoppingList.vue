@@ -14,7 +14,7 @@
         <font-awesome-icon icon="fa-solid fa-arrow-left" />
       </div>
       <div class="action">
-        <button @click="multipleDelete" class="btn btn-primary">
+        <button @click="panelDelete = true" class="btn btn-primary">
           Delete
           <font-awesome-icon icon="fa-solid fa-trash" />
         </button>
@@ -26,18 +26,21 @@
       </div>
     </div>
     <div 
-      class="panel-delete d-flex flex-direction-column"
-      :class="panelStore ? 'show' : 'hide'"
+      class="panel-delete-background"
+      :class="panelDelete ? 'show' : 'hide'"
     >
-      <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
-      <div class="action d-flex">
-        <button class="btn">
-          Annulla
-        </button>
-        <button class="btn btn-primary">
-          Conferma
-        </button>
+      <div class="blurred" @click="panelDelete = false"></div>
+      <div class="panel-delete d-flex flex-direction-column">
+        <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
+        <div class="action d-flex">
+          <button class="btn">
+            Annulla
+          </button>
+          <button @click="manageMultipleDelete" class="btn btn-primary">
+            Conferma
+          </button>
 
+        </div>
       </div>
     </div>
     <div 
@@ -153,6 +156,7 @@ export default {
       actualEl: Object,
       selectedList: [],
       panelStore: false,
+      panelDelete: false,
       storages: [
         "Frigorifero",
         "Freezer",
@@ -202,8 +206,61 @@ export default {
         el.selected = false;
       });
     },
+    deleteOne(){
+      let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
+      let promises = [];
+      tempShoppingList.forEach((el, index)=>{
+        if(this.selectedList.includes(index.toString())){
+          const p = new Promise((resolve, reject) => {
+            supabase
+              .from('food')
+              .delete()
+              .eq('id', this.shoppingList[index].id)
+              .then((data)=>{
+                console.log(data);
+                resolve()
+              })
+              .catch((err)=>{
+                console.log(err);
+                reject()
+              })
+          })
+          promises.push(p);
+        }
+      })
+      return Promise.all(promises);
+    },
+    manageMultipleDelete(){
+      let vue = this;
+      this.deleteOne().then(()=>{
+        vue.panelDelete = false;
+        vue.popupMessage = `${vue.selectedList.length} elementi eliminati correttamente`;
+        vue.popupType = "success";
+        vue.triggerPopup = true;
+
+        vue.selectedList = [];
+
+        this.getShoppingList().then((data)=>{
+          vue.shoppingList = data;
+          vue.shoppingList.forEach(el=>{
+            el.selected = false;
+          })
+    })
+      });
+    },
     multipleDelete(){
       console.log("multiple delete");
+      let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
+      tempShoppingList.forEach((el, index)=>{
+        if(this.selectedList.includes(index.toString())){
+          console.log(this.shoppingList[index]);
+          this.shoppingList.splice(index, 1);
+          console.log(el);
+          console.log(this.shoppingList[index]);
+        }
+      })
+      this.panelDelete = false;
+      console.log(this.shoppingList);
     },
     multipleStore(){
       if(this.selectedList.length > 0){
@@ -361,6 +418,65 @@ export default {
     }
   }
   .shopping-list{
+    .panel-delete-background{
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 12px;
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .blurred{
+        height: 100%;
+        position: absolute;
+        top: 0;
+        backdrop-filter: blur(0px);
+      }
+      &.show{
+        z-index: 1;
+        .blurred{
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          backdrop-filter: blur(5px);
+        }
+        .panel-delete{
+          width: 80%;
+          height: 200px;
+          padding: 30px;
+        }
+      }
+      &.hide{
+        z-index: -1;
+        .blurred{
+          top: 50%;
+          bottom: 50%;
+          left: 50%;
+          right: 50%;
+          overflow: hidden;
+        }
+        .panel-delete{
+          width: 0%;
+          height: 0;
+        }
+      }
+      .panel-delete{
+        position: absolute;
+        background-color: var(--background-component);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        justify-content: space-between;
+        transition: all .2s;
+        overflow: hidden;
+        button{
+          height: 50px;
+        }
+      }
+    }
     .header{
       justify-content: space-between;
       padding: 0 12px;
@@ -447,7 +563,7 @@ export default {
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 140px;
+            width: 150px;
           }
         }
         input[type=radio]{
@@ -472,6 +588,7 @@ export default {
         justify-content: flex-end;
         button{
           width: 150px;
+          height: 50px;
           margin-left: 20px;
         }
       }
