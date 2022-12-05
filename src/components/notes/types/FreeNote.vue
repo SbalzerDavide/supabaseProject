@@ -162,6 +162,9 @@ export default {
     .title{
       height: 40px;
       align-items: center;
+      h3, input{
+        width: 100%;
+      }
     }
     .free-note-content{
       flex-direction: column;
@@ -175,6 +178,12 @@ export default {
     }
     .action{
       margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      button{
+        width: 150px;
+        height: 50px;
+      }
     }
   }
 </style>

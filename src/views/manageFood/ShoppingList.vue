@@ -55,9 +55,8 @@
         </h2>
         <div class="content flex-grow">
           <div class="deadline d-flex flex-direction-column">
-            <h4>Scadenza</h4>
-            <span>{{ deadlineValueFormat }}</span>
-            <div class="single-radio">
+            <h4>Scadenza - {{ deadlineValueFormat }}</h4>
+              <div class="single-radio">
               <input type="radio" id="3days" name="deadline" value="3" @change="modifyDeadline(false, 3)">
               <label for="3days">3 days</label>
             </div>

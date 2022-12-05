@@ -86,6 +86,9 @@ export default {
 
 <style lang="scss">
   .new{
+    select{
+      width: 100%;
+    }
     .noteType{
     }
   }

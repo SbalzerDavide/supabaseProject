@@ -73,6 +73,8 @@ export default {
           .from("notes")
           .select()
           .eq('user_id', vue.user.id)
+          // verificare che questo order faccia veramente quello che voglio, ovvero che mi ordini in maniera discendete le note
+          .order('id', { ascending: false })
           .then((data)=>{
             resolve(data.data);
           })
