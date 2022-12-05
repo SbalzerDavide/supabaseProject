@@ -72,7 +72,8 @@ export default {
       justify-content: flex-end;
       button{
         margin-left: 10px;
-        width: 120px;
+        width: 150px;
+        height: 50px;
       }
     }
   }

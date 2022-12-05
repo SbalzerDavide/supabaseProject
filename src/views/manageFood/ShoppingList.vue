@@ -125,9 +125,9 @@
           <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </div>
-          <div @click="deleteEl(index)" class="delete">
+          <!-- <div @click="deleteEl(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
-          </div>
+          </div> -->
           <!-- <div @click="storePanel(index)" class="toStorage">
             <font-awesome-icon icon="fa-solid fa-box" />
           </div> -->

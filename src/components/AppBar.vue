@@ -1,7 +1,8 @@
 <template>
   <div class="app-bar">
     <div class="container d-flex">
-      <h1>sono app bar</h1>
+      <!-- <h1 @click="goHome">sono app bar</h1> -->
+      <font-awesome-icon @click="goHome" icon="fa-solid fa-house" />
 
       <button class="btn logout" @click="logout">Logout</button>
 
@@ -31,6 +32,9 @@ export default {
   created(){
   },
   methods:{
+    goHome(){
+      this.$router.push({name: "App"})
+    },
     logout(){
       let vue = this;
       supabase.auth.signOut()
@@ -56,8 +60,16 @@ export default {
       max-width: 1200px;
       height: 100%;
       margin: 0 auto;
+      padding: 0 20px;
       // display: flex;
       align-items: center;
+      svg{
+        height: 35px;
+        cursor: pointer;
+      }
+      button{
+        margin-left: 20px;
+      }
     }
   }
 
