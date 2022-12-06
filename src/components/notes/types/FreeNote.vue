@@ -142,6 +142,8 @@ export default {
                 message: "La nota è stata salvata correttamente",
                 type: "success"
               })
+              vue.$router.push({ path: 'list', replace: true })
+
             })
             .catch((err)=>{
               console.log(err);
@@ -174,6 +176,7 @@ export default {
     textarea{
       width: 100%;
       height: 100%;
+      min-height: 200px;
       padding: 10px;
     }
     .action{

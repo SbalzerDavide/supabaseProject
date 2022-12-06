@@ -40,7 +40,7 @@ export default {
   data(){
     return{
       firstPage: true,
-      showMoreInfo: true,
+      showMoreInfo: false,
     }
   },
   mounted(){

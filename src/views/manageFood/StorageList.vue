@@ -7,6 +7,23 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
+    <div v-show="selected > 0" class="storage-list-appbar">
+      <div @click="removeSelection" class="back">
+        <font-awesome-icon icon="fa-solid fa-arrow-left" />
+      </div>
+      <div class="action">
+        <button class="btn btn-primary">
+          Delete
+          <font-awesome-icon icon="fa-solid fa-trash" />
+        </button>
+
+        <button class="btn btn-primary">
+          List
+          <font-awesome-icon icon="fa-solid fa-box" />
+        </button>
+      </div>
+    </div>
+
     <div 
       class="panel-delete-background" 
       :class="panelDelete ? 'show' : 'hide'"
@@ -41,10 +58,10 @@
           </option>
         </select>
       </div>
-      <button @click="multipleAction" class="btn btn-primary">
+      <!-- <button @click="multipleAction" class="btn btn-primary">
         Store
         <font-awesome-icon icon="fa-solid fa-box" />
-      </button>
+      </button> -->
     </div>
 
     <ul>
@@ -144,6 +161,12 @@ export default {
           }
         });
       }
+    },
+    removeSelection(){
+      this.selected = 0;
+      this.storageList.forEach(el => {
+        el.selected = false;
+      });
     },
     multipleAction(){
       if(this.selected > 0){
@@ -247,6 +270,32 @@ export default {
 </script>
 
 <style lang="scss">
+  .storage-list-appbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--background-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    .back{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      svg{
+        height: 40px;
+      }
+    }
+    button{
+      margin-left: 20px;
+      height: 45px;
+      width: 120px;
+      font-size: 20px;
+    }
+  }
   .storage-list{
     .header{
       justify-content: space-between;

@@ -1,8 +1,8 @@
 <template>
   <div class="notes d-flex flex-direction-column flex-grow">
-    <div class="title">
+    <!-- <div class="title">
       <h2>notes</h2>
-    </div>
+    </div> -->
     <div class="navigation-button d-flex">
       <button @click="goto('list')" class="btn">
         List
@@ -69,10 +69,10 @@ export default {
       }
     }
     .navigation-button{
-      justify-content: flex-end;
+      justify-content: space-between;
       button{
         margin-left: 10px;
-        width: 150px;
+        width: 44%;
         height: 50px;
       }
     }

@@ -5,9 +5,8 @@
         class="note" 
         v-for="(note, index) in notes" 
         :key="index"
-        @click="openNote(index)"
       >
-        <div class="note-background">
+        <div class="note-background" @click="openNote(index)">
           <div class="title">
             {{ note.title }}
           </div>
@@ -55,12 +54,14 @@ export default {
   },
   methods:{
     deleteNote(index){
+      let vue = this;
       supabase
         .from('notes')
         .delete()
         .eq('id', this.notes[index].id)
         .then((data)=>{
           console.log(data);
+          vue.notes.splice(index, 1);
         })
         .catch((err)=>{
           console.log(err);
@@ -108,6 +109,9 @@ export default {
       cursor: pointer;
       &:hover{
         background-color: var(--background-hover);
+      }
+      .note-background{
+        margin-right: 34px;
       }
       .note-foreground{
         position: absolute;        

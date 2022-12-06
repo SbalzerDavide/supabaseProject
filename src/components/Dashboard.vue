@@ -25,7 +25,7 @@ export default {
       appList: [
         {
           title: "note",
-          value: "notes"
+          value: "notes/list"
         },
         {
           title: "organizza cibo",

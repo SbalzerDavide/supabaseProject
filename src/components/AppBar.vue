@@ -4,7 +4,8 @@
       <!-- <h1 @click="goHome">sono app bar</h1> -->
       <font-awesome-icon @click="goHome" icon="fa-solid fa-house" />
 
-      <button class="btn logout" @click="logout">Logout</button>
+      <!-- <button class="btn logout" @click="logout">Logout</button> -->
+      <font-awesome-icon @click="logout" icon="fa-solid fa-right-from-bracket" />
 
 
     </div>
@@ -57,6 +58,7 @@ export default {
     height: 80px;
     background-color: var(--background-primary);
     .container{
+      justify-content: space-between;
       max-width: 1200px;
       height: 100%;
       margin: 0 auto;

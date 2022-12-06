@@ -33,7 +33,7 @@
       <div class="panel-delete d-flex flex-direction-column">
         <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
         <div class="action d-flex">
-          <button class="btn">
+          <button @click="panelDelete = false" class="btn">
             Annulla
           </button>
           <button @click="manageMultipleDelete" class="btn btn-primary">
@@ -447,6 +447,7 @@ export default {
           width: 80%;
           height: 200px;
           padding: 30px;
+          opacity: 1;
         }
       }
       &.hide{
@@ -459,8 +460,9 @@ export default {
           overflow: hidden;
         }
         .panel-delete{
-          width: 0%;
-          height: 0;
+          width: 60%;
+          height: 100px;
+          opacity: 0;
         }
       }
       .panel-delete{
@@ -477,8 +479,12 @@ export default {
       }
     }
     .header{
-      justify-content: space-between;
+      justify-content: center;
       padding: 0 12px;
+      h1{
+        padding-bottom: 3px;
+        border-bottom: 3px solid var(--color-3);
+      }
       button{
         width: 80px;
       }
@@ -513,7 +519,6 @@ export default {
       position: fixed;
       padding-top: 20px;
       background-color: var(--background);
-      // transition: all .2s;
       &.show{
         top: 80px;
         bottom: 60px;

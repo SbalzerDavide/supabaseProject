@@ -7,7 +7,7 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
-    <h3>show note</h3>
+    <!-- <h3>show note</h3> -->
 
 
     <div class="noteType d-flex flex-direction-column flex-grow">

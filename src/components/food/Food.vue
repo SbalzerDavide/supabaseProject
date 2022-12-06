@@ -1,5 +1,11 @@
 <template>
   <div class="food d-flex flex-direction-column flex-grow">
+    <div v-show="food.name !=''" class="food-appbar">
+      <button @click="save" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+
     <div class="food-input d-flex flex-direction-column flex-grow">
       <div class="mode d-flex">
         <button 
@@ -115,14 +121,14 @@
         </textarea>
       </div>
     </div>
-    <div class="food-action">
+    <!-- <div class="food-action">
       <button class="btn btn-primary" 
         @click="save"
         @keyup.enter="save"
       >
         Save
       </button>
-    </div>
+    </div> -->
 
   </div>
 </template>
@@ -307,10 +313,26 @@ export default{
 </script>
 
 <style lang="scss">
+  .food-appbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--background-primary);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    button{
+      height: 50px;
+      width: 40%;
+    }
+  }
   .mode{
     justify-content: space-between;
     button{
-      width: 40%;
+      width: 44%;
+      height: 50px;
       &.active{
         color: var(--primary-color);
         border-color: var(--primary-color);
@@ -319,7 +341,7 @@ export default{
   }
   .food-input{
     &>div{
-      margin: 10px 0;
+      margin: 8px 0;
     }
     input[type=radio]{
       width: 20px;
@@ -335,6 +357,8 @@ export default{
         }
       }
       .quantity{
+        display: flex;
+        align-items: center;
         label{
           margin: 0 5px 0 15px;
         }
@@ -393,6 +417,7 @@ export default{
     .description{
       textarea{
         width: 100%;
+        min-height: 200px;
         padding: 10px;
         flex-grow: 1;
       }
