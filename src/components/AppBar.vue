@@ -1,15 +1,17 @@
 <template>
   <div class="app-bar">
     <div class="container d-flex">
-      <!-- <h1 @click="goHome">sono app bar</h1> -->
-      <font-awesome-icon @click="goHome" icon="fa-solid fa-house" />
+      <div class="left d-flex">
+        <font-awesome-icon @click="goHome" icon="fa-solid fa-house" />
+        <ThemeSwitch />
+      </div>
 
-      <!-- <button class="btn logout" @click="logout">Logout</button> -->
-      <font-awesome-icon @click="logout" icon="fa-solid fa-right-from-bracket" />
+      <div class="right">
+        <font-awesome-icon @click="logout" icon="fa-solid fa-right-from-bracket" />
+      </div>
 
 
     </div>
-    <ThemeSwitch />
   </div>
 </template>
 
@@ -53,6 +55,7 @@ export default {
 <style lang="scss">
   .app-bar{
     position: fixed;
+    z-index: 3;
     top: 0;
     width: 100vw;
     height: 80px;
@@ -71,6 +74,9 @@ export default {
       }
       button{
         margin-left: 20px;
+      }
+      .change-theme{
+        margin-left: 16px;
       }
     }
   }

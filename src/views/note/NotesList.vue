@@ -1,5 +1,33 @@
 <template>
   <div class="list-notes">
+    <PopupMessage 
+      :content="popupMessage" 
+      position="bottom"
+      :type="popupType" 
+      :show="triggerPopup" 
+      @showBack="triggerPopup=false"
+    />
+
+    <!-- panel confermata delete -->
+    <div 
+      class="panel-delete-background"
+      :class="panelDelete ? 'show' : 'hide'"
+    >
+      <div class="blurred" @click="panelDelete = false"></div>
+      <div class="panel-delete d-flex flex-direction-column">
+        <h4>Sei sicuro di voler eliminare la nota?</h4>
+        <div class="action d-flex">
+          <button @click="panelDelete = false" class="btn">
+            Annulla
+          </button>
+          <button @click="deleteNote(selectedIndex)" class="btn btn-primary">
+            Conferma
+          </button>
+
+        </div>
+      </div>
+    </div>
+
     <ul>
       <li 
         class="note" 
@@ -16,7 +44,8 @@
           </div>   
         </div>
         <div class="note-foreground">
-          <div class="delete" @click="deleteNote(index)">
+          <!-- <div class="delete" @click="deleteNote(index)"> -->
+          <div class="delete" @click="selectNoteForDelete(index)">
             <font-awesome-icon icon="fa-solid fa-trash" />
           </div>     
         </div>
@@ -27,18 +56,25 @@
 
 <script>
 import { supabase } from "../../supabase.js";
+import PopupMessage from "../../components/PopupMessage.vue";
 
 
 export default {
   name: 'NotesList',
   components: {
+    PopupMessage
   },
   props: {
   },
   data(){
     return{
       user: {},
-      notes: []
+      notes: [],
+      panelDelete: false,
+      selectedIndex: Number,
+      popupMessage: "",
+      popupType: "",
+      triggerPopup: false,
     }
   },
   created(){
@@ -53,6 +89,10 @@ export default {
     });
   },
   methods:{
+    selectNoteForDelete(index){
+      this.selectedIndex = index;
+      this.panelDelete = true;
+    },
     deleteNote(index){
       let vue = this;
       supabase
@@ -62,6 +102,11 @@ export default {
         .then((data)=>{
           console.log(data);
           vue.notes.splice(index, 1);
+          // show message delete
+          vue.popupMessage = "Nota eliminata";
+          vue.popupType = "success";
+          vue.triggerPopup = true;
+          vue.panelDelete = false;
         })
         .catch((err)=>{
           console.log(err);
@@ -132,5 +177,69 @@ export default {
       }
     }
   }
-
+  .panel-delete-background{
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 12px;
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .blurred{
+        height: 100%;
+        position: absolute;
+        top: 0;
+        backdrop-filter: blur(0px);
+      }
+      &.show{
+        z-index: 2;
+        .blurred{
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          backdrop-filter: blur(5px);
+        }
+        .panel-delete{
+          width: 90%;
+          height: 180px;
+          padding: 20px;
+          opacity: 1;
+        }
+      }
+      &.hide{
+        z-index: -1;
+        .blurred{
+          top: 50%;
+          bottom: 50%;
+          left: 50%;
+          right: 50%;
+          overflow: hidden;
+        }
+        .panel-delete{
+          width: 60%;
+          height: 100px;
+          opacity: 0;
+        }
+      }
+      .panel-delete{
+        position: absolute;
+        background-color: var(--background-component);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        justify-content: space-between;
+        transition: all .2s;
+        overflow: hidden;
+        .action{
+          justify-content: space-between;
+        }
+        button{
+          height: 50px;
+          width: 45%;
+        }
+      }
+    }
 </style>

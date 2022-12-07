@@ -2,7 +2,7 @@
   <div class="storage-list d-flex flex-direction-column flex-grow">
     <PopupMessage 
       :content="popupMessage" 
-      position="center"
+      position="bottom"
       :type="popupType" 
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
@@ -390,9 +390,9 @@ export default {
           backdrop-filter: blur(5px);
         }
         .panel-delete{
-          width: 80%;
-          height: 200px;
-          padding: 30px;
+          width: 90%;
+          height: 180px;
+          padding: 20px;
         }
       }
       &.hide{
@@ -423,7 +423,7 @@ export default {
         justify-content: space-between;
         button{
           height: 60px;
-          width: 40%;
+          width: 45%;
         }
       }
       .addToShoppingList{

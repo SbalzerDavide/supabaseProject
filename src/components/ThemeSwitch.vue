@@ -54,13 +54,14 @@ export default {
 
 <style lang="scss">
     .change-theme{
-      position: fixed;
-      top: 40px;
-      transform: translateY(-50%);
-      right: 15%;
+      // position: fixed;
+      // top: 40px;
+      // transform: translateY(-50%);
+      // right: 15%;
       // display: flex;
       align-items: center;
       svg{
+        height: 20px !important;
         cursor: pointer;
       }
       .switch{

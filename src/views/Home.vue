@@ -48,25 +48,27 @@ export default {
   },
   methods:{
     getProfiles(){
-      try {
-        const { user } = this.session;
-        let vue = this;
-        supabase
-          .from("profiles")
-          .select(`username, website, avatar_url`)
-          .eq('id', user.id)
-          .single()
-          .then((data)=>{
-            let userData = data.data;
-            userData.id = vue.session.user.id;
-            userData.email = vue.session.user.email;
-
-            window.sessionStorage.setItem("userData", JSON.stringify(userData));
-          })
-      } catch (error) {
-        alert(error.message)
-      } finally {
-        console.log("ho finito");
+      if(this.session){
+        try {
+          const { user } = this.session;
+          let vue = this;
+          supabase
+            .from("profiles")
+            .select(`username, website, avatar_url`)
+            .eq('id', user.id)
+            .single()
+            .then((data)=>{
+              let userData = data.data;
+              userData.id = vue.session.user.id;
+              userData.email = vue.session.user.email;
+  
+              window.sessionStorage.setItem("userData", JSON.stringify(userData));
+            })
+        } catch (error) {
+          alert(error.message)
+        } finally {
+          console.log("ho finito");
+        }
       }
     },
     firstPageEvent(e){
