@@ -139,10 +139,11 @@
 <script>
 import { supabase } from '../../supabase';
 import PopupMessage from "../../components/PopupMessage.vue";
-
+import loaderMixin from "../../mixins/loaderMixin.js"
 
 export default {
   name: 'ShoppingList',
+  mixins: [loaderMixin],
   components: {
     PopupMessage
   },
@@ -177,7 +178,9 @@ export default {
       this.user = JSON.parse(stringUserData);
     }
     let vue = this;
+    this.changeLoader(true);
     this.getShoppingList().then((data)=>{
+      this.changeLoader(false);
       vue.shoppingList = data;
       vue.shoppingList.forEach(el=>{
         el.selected = false;
@@ -400,6 +403,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    z-index: 4;
     .back{
       display: flex;
       align-items: center;

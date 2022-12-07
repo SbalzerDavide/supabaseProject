@@ -29,13 +29,11 @@
 
 <script>
 import { supabase } from '../../supabase';
-// import PopupMessage from "../../components/PopupMessage.vue";
-// import Food from "../../components/food/Food.vue";
-
-
+import loaderMixin from "../../mixins/loaderMixin.js"
 
 export default {
   name: 'ShoppingList',
+  mixins: [loaderMixin],
   components: {
   },
   props: {
@@ -52,7 +50,9 @@ export default {
       this.user = JSON.parse(stringUserData);
     }
     let vue = this;
+    this.changeLoader(true);
     this.getGarbageList().then((data)=>{
+      this.changeLoader(false);
       vue.garbageList = data;
       vue.garbageList.forEach(el=>{
         el.selected = false;

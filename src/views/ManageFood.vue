@@ -83,7 +83,9 @@ export default {
   },  
   methods:{
     goTo(name){
-      this.$router.push({ path: `/home/manageFood/${name}` });
+      if(!window.location.href.endsWith(name)){
+        this.$router.push({ path: `/home/manageFood/${name}` });
+      }
     },
   }
 }

@@ -47,7 +47,9 @@ export default {
       })
     },
     goto(name){
-      this.$router.push({ path: `/home/notes/${name}` });
+      if(!window.location.href.endsWith(name)){
+        this.$router.push({ path: `/home/notes/${name}` });
+      }
     }
 
   }
@@ -62,7 +64,6 @@ export default {
       text-align: center;
     }
     .note{
-      padding: 10px;
       cursor: pointer;
       &:hover{
         background-color: var(--background-hover);

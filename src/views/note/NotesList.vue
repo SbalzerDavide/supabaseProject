@@ -57,10 +57,12 @@
 <script>
 import { supabase } from "../../supabase.js";
 import PopupMessage from "../../components/PopupMessage.vue";
+import loaderMixin from "../../mixins/loaderMixin.js"
 
 
 export default {
   name: 'NotesList',
+  mixins: [loaderMixin],
   components: {
     PopupMessage
   },
@@ -83,9 +85,10 @@ export default {
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
+    this.changeLoader(true);
     this.getNotes().then((data)=>{
       vue.notes = data;
-      console.log(vue.notes);
+      vue.changeLoader(false);
     });
   },
   methods:{
@@ -150,13 +153,14 @@ export default {
     .note{
       position: relative;
       display: flex;
-      padding: 10px;
       cursor: pointer;
       &:hover{
         background-color: var(--background-hover);
       }
       .note-background{
         margin-right: 34px;
+        width: 100%;
+        padding: 10px;
       }
       .note-foreground{
         position: absolute;        

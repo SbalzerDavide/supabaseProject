@@ -46,7 +46,6 @@
 
     </div>
     <div class="header d-flex">
-      <div class="d-flex">
         <h1>Storage list</h1>
         <select @change="applyFilter" name="storage" v-model="storageFilter">
           <option 
@@ -57,7 +56,6 @@
             {{ storage }}
           </option>
         </select>
-      </div>
       <!-- <button @click="multipleAction" class="btn btn-primary">
         Store
         <font-awesome-icon icon="fa-solid fa-box" />
@@ -100,13 +98,14 @@
 import { supabase } from '../../supabase';
 // import Food from "../../components/food/Food.vue";
 import PopupMessage from "../../components/PopupMessage.vue";
-
+import loaderMixin from "../../mixins/loaderMixin.js"
 
 
 export default {
   name: 'StorageList',
+  mixins: [loaderMixin],
   components: {
-    PopupMessage
+    PopupMessage,
   },
   props: {
   },
@@ -136,10 +135,11 @@ export default {
       this.user = JSON.parse(stringUserData);
     }
     let vue = this;
+    this.changeLoader(true);
     this.getStorageList().then((data)=>{
+      this.changeLoader(false);
       vue.storageList = data;
       vue.storageListOriginal = data;
-      console.log(vue.storageList);
       let today = new Date();
       vue.storageList.forEach(el=>{
         let elDate = new Date(el.deadline);
@@ -280,6 +280,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    z-index: 4;
     .back{
       display: flex;
       align-items: center;
@@ -301,6 +302,10 @@ export default {
       justify-content: space-between;
       align-items: center;
       padding: 0 12px;
+      h1{
+        padding-bottom: 3px;
+        border-bottom: 3px solid var(--color-3);
+      }
       div{
         align-items: center;
       }
