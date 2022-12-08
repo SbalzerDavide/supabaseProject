@@ -214,9 +214,17 @@ export default {
           color: var(--text-color);
         }
       }
-      input:not([type='checkbox']){
+      .login-box > *{
         margin-bottom: 8px;
+      }
+      input:not([type='checkbox']){
+        // margin-bottom: 8px;
         width: 100%;
+      }
+      input[type="checkbox"]{
+        width: 20px;
+        height: 20px;
+
       }
       .remember{
         display: flex;
@@ -235,9 +243,14 @@ export default {
         justify-content: center;
         width: 21px;
         position: absolute;
-        height: 27.5px;
+        height: 100%;
         right: 10px;
       }
+    }
+    .change-theme{
+      position: fixed;
+      top: 25px;
+      right: 40px;
     }
   }
 </style>
