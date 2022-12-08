@@ -30,18 +30,15 @@ export default {
     window.addEventListener("changeLoader", this.changeLoader)
   },
   mounted(){
-    console.log("fatto mounted");
     let vue = this;
     supabase.auth.getSession()
       .then(({ data }) => {
-        console.log(data);
         vue.session = data.session;
       })
       .catch((err)=>{
         console.log(err);
       })
       .finally(()=>{
-        console.log("finally");
         if(vue.session != null){
           vue.$router.push({ name: 'Home', params: {
             session: vue.session

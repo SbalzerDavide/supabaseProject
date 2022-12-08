@@ -251,18 +251,14 @@ export default {
       });
     },
     multipleDelete(){
-      console.log("multiple delete");
       let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
       tempShoppingList.forEach((el, index)=>{
         if(this.selectedList.includes(index.toString())){
-          console.log(this.shoppingList[index]);
           this.shoppingList.splice(index, 1);
           console.log(el);
-          console.log(this.shoppingList[index]);
         }
       })
       this.panelDelete = false;
-      console.log(this.shoppingList);
     },
     multipleStore(){
       if(this.selectedList.length > 0){
@@ -304,7 +300,6 @@ export default {
         deadline: this.deadlineValue,
         shoppingList: false,
       }
-      console.log(this.deadlineValue);
       let saved = false;
       supabase
         .from("food")
@@ -369,7 +364,6 @@ export default {
         }
         // this.selected--;
       }
-      console.log(this.selectedList);
     },
     getShoppingList(){
       return new Promise((resolve, reject)=>{

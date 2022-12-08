@@ -43,7 +43,6 @@ export default {
   },
   methods:{
     showMessage(e){
-      console.log(e);
       this.triggerPopup = true;
       this.popupMessage = e.message;
       this.popupType = e.type;      

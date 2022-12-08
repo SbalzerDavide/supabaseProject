@@ -1,6 +1,6 @@
 <template>
   <div class="food d-flex flex-direction-column flex-grow">
-    <div v-show="food.name !=''" class="food-appbar">
+    <div v-show="availableSave" class="food-appbar">
       <button @click="save" class="btn btn-primary">
         Save
       </button>
@@ -31,6 +31,7 @@
             type="text"
             v-model="food.name"
             placeholder="Alimento"
+            @keyup="checkAvailableSave"
             @keyup.enter="save"
           >
           <h3 v-else>{{ food.title }}</h3>
@@ -61,7 +62,7 @@
           Imposta scadenza
         </button>
         <span>
-          scadenza impostata: {{ deadlineValueFormat }}
+          {{ deadlineValueFormat }}
         </span>
         <div v-show="openSetDeadline" class="radio d-flex flex-direction-column">
           <!-- valori preimpostati, in cui alla funzione vengono passati i giorni -->
@@ -168,7 +169,8 @@ export default{
       deadlineValue: Object,
       calendarDate: Object,
       deadlineValueFormat: "",
-      inputDays: 0
+      inputDays: 0,
+      availableSave: false
     }
   },
   created(){
@@ -193,7 +195,17 @@ export default{
     this.deadlineValue =  new Date();
     
   },
+  mounted(){
+    this.$refs.inputName.focus();
+  },
   methods:{
+    checkAvailableSave(){
+      if(this.food.name !== ""){
+        this.availableSave = true;
+      } else{
+        this.availableSave = false;
+      }
+    },
     checkStorage(){
       if(this.food.storage === "Lista della spesa"){
         this.food.shoppingList = true;
@@ -202,7 +214,6 @@ export default{
       }
     },
     modifyDeadline(calendar, days, triggerRef){
-      console.log("event change");
       if(triggerRef){
         this.$refs[triggerRef].click();
       }
@@ -245,6 +256,7 @@ export default{
                   message: "L'alimento è stato salvato correttamente",
                   type: "success"
                 })
+                vue.availableSave = false;
               }
             })
             .catch((error)=>{
@@ -294,6 +306,7 @@ export default{
                   description: ""
                 }
                 vue.$refs.inputName.focus();
+                vue.availableSave = false;
               }
             })
             .catch((err)=>{

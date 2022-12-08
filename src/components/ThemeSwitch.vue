@@ -27,9 +27,6 @@ export default {
       theme: "light"
     }
   },
-  mounted(){
-    console.log("mounted theme switch");
-  },
   methods:{
     changeTheme(theme){
       if(theme !== ""){

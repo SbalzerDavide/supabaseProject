@@ -66,8 +66,6 @@ export default {
             })
         } catch (error) {
           alert(error.message)
-        } finally {
-          console.log("ho finito");
         }
       }
     },
