@@ -323,6 +323,7 @@ export default{
     justify-content: flex-end;
     align-items: center;
     padding: 0 20px;
+    z-index: 5;
     button{
       height: 50px;
       width: 40%;

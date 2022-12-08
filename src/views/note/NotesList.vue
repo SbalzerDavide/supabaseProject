@@ -7,6 +7,12 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
+    <button @click="goToNew" class="btn btn-primary add-new-note float">
+      <font-awesome-icon icon="fa-solid fa-plus" />
+    </button>
+    <div class="header">
+      <h1>Note</h1>
+    </div>
 
     <!-- panel confermata delete -->
     <div 
@@ -92,6 +98,9 @@ export default {
     });
   },
   methods:{
+    goToNew(){
+      this.$router.push({ path: 'new', replace: true })
+    },
     selectNoteForDelete(index){
       this.selectedIndex = index;
       this.panelDelete = true;
@@ -147,6 +156,15 @@ export default {
 
 <style lang="scss">
   .notes{
+    .header{
+      display: flex;
+      justify-content: center;
+      padding: 0 12px;
+      h1{
+        padding-bottom: 3px;
+        border-bottom: 3px solid var(--color-3);
+      }
+    }
     li{
       list-style: none;
     }
@@ -182,68 +200,81 @@ export default {
     }
   }
   .panel-delete-background{
-      position: fixed;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 12px;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .blurred{
+      height: 100%;
+      position: absolute;
       top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      padding: 12px;
-      padding-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      backdrop-filter: blur(0px);
+    }
+    &.show{
+      z-index: 2;
       .blurred{
-        height: 100%;
-        position: absolute;
         top: 0;
-        backdrop-filter: blur(0px);
-      }
-      &.show{
-        z-index: 2;
-        .blurred{
-          top: 0;
-          bottom: 0;
-          right: 0;
-          left: 0;
-          backdrop-filter: blur(5px);
-        }
-        .panel-delete{
-          width: 90%;
-          height: 180px;
-          padding: 20px;
-          opacity: 1;
-        }
-      }
-      &.hide{
-        z-index: -1;
-        .blurred{
-          top: 50%;
-          bottom: 50%;
-          left: 50%;
-          right: 50%;
-          overflow: hidden;
-        }
-        .panel-delete{
-          width: 60%;
-          height: 100px;
-          opacity: 0;
-        }
+        bottom: 0;
+        right: 0;
+        left: 0;
+        backdrop-filter: blur(5px);
       }
       .panel-delete{
-        position: absolute;
-        background-color: var(--background-component);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--border-color);
-        justify-content: space-between;
-        transition: all .2s;
-        overflow: hidden;
-        .action{
-          justify-content: space-between;
-        }
-        button{
-          height: 50px;
-          width: 45%;
-        }
+        width: 90%;
+        height: 180px;
+        padding: 20px;
+        opacity: 1;
       }
     }
+    &.hide{
+      z-index: -1;
+      .blurred{
+        top: 50%;
+        bottom: 50%;
+        left: 50%;
+        right: 50%;
+        overflow: hidden;
+      }
+      .panel-delete{
+        width: 60%;
+        height: 100px;
+        opacity: 0;
+      }
+    }
+    .panel-delete{
+      position: absolute;
+      background-color: var(--background-component);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      justify-content: space-between;
+      transition: all .2s;
+      overflow: hidden;
+      .action{
+        justify-content: space-between;
+      }
+      button{
+        height: 50px;
+        width: 45%;
+      }
+    }
+  }
+  .add-new-note{
+    &.float{
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      margin: 10px;
+      z-index: 5;
+      border-radius: 50%;
+    }
+  }
+
 </style>

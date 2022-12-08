@@ -3,16 +3,17 @@
     <!-- <div class="title">
       <h2>notes</h2>
     </div> -->
-    <div class="navigation-button d-flex">
+    <!-- <div class="navigation-button d-flex">
       <button @click="goto('list')" class="btn">
         List
       </button>
-      <button @click="goto('new')" class="btn btn-primary">
+      <button @click="goto('new')" class="btn btn-primary add-new-note float">
         <font-awesome-icon icon="fa-solid fa-plus" />
-          Nuova nota
         </button>
-    </div>
-    <router-view></router-view>
+    </div> -->
+    <transition name="slide">
+      <router-view class="view"/>
+    </transition>
 
   </div>
 </template>
@@ -38,6 +39,9 @@ export default {
     let stringUserData = window.sessionStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
+    }
+    if(window.location.href.endsWith("list")){
+      this.showFloatNew = true;
     }
   },
   methods:{
@@ -78,5 +82,17 @@ export default {
       }
     }
   }
-
+  .view{
+    min-height: 100vh;
+  }
+  .slide-enter-active {
+    transition: all .5s;
+  }
+  .slide-leave-active {
+    transition: all .5s;
+  }
+  .slide-fade-enter, .slide-fade-leave-to{
+    transform: translateX(100vw);
+    // opacity: 0;
+  }
 </style>
