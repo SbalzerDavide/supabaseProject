@@ -167,18 +167,22 @@ export default {
     }
     li{
       list-style: none;
+      margin-top: 8px;
     }
     .note{
       position: relative;
       display: flex;
+      border-radius: var(--border-radius);
+      background-color: var(--background-hover);
+      // background-color: var(--color-3);
       cursor: pointer;
-      &:hover{
-        background-color: var(--background-hover);
-      }
+      // &:hover{
+      //   background-color: var(--background-hover);
+      // }
       .note-background{
         margin-right: 34px;
         width: 100%;
-        padding: 10px;
+        padding: 8px;
       }
       .note-foreground{
         position: absolute;        
@@ -267,8 +271,8 @@ export default {
   .add-new-note{
     &.float{
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 20px;
+      right: 20px;
       width: 50px;
       height: 50px;
       margin: 10px;

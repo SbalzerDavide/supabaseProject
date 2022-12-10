@@ -433,7 +433,7 @@ export default {
         backdrop-filter: blur(0px);
       }
       &.show{
-        z-index: 1;
+        z-index: 4;
         .blurred{
           top: 0;
           bottom: 0;
@@ -442,9 +442,9 @@ export default {
           backdrop-filter: blur(5px);
         }
         .panel-delete{
-          width: 80%;
-          height: 200px;
-          padding: 30px;
+          width: 90%;
+          height: 180px;
+          padding: 20px;
           opacity: 1;
         }
       }

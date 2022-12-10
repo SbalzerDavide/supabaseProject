@@ -1,6 +1,14 @@
 <template>
   <div id="app">
     <!-- questa pagina funge da middleware per fare il redirect a seconda che si ao meno loggato -->
+    <PopupMessage 
+      :content="popupMessage" 
+      :position="position"
+      :type="popupType" 
+      :show="triggerPopup" 
+      @showBack="triggerPopup=false"
+    />
+
     <div v-show="loader" class="loader">
       <div class="spinner"></div>
       <font-awesome-icon icon="fa-solid fa-circle-notch" />
@@ -12,22 +20,31 @@
 
 <script>
 import { supabase } from "./supabase.js";
+import PopupMessage from "./components/PopupMessage.vue"
 
 
 export default {
   name: 'App',
   components: {
+    PopupMessage
   },
   data(){
     return {
       session: null,
       loader: false,
+      popupMessage: "",
+      position: "bottom",
+      popupType: "",
+      triggerPopup: false,
     }
   },
   created(){
     // aggiungere logica che calcola il tema rispetto al default di sistema
-    document.body.classList.add(`theme-light`);
-    window.addEventListener("changeLoader", this.changeLoader)
+    if(!document.body.classList.contains("theme-light") && !document.body.classList.contains("theme-dark")){
+      document.body.classList.add(`theme-light`); 
+    }
+    window.addEventListener("changeLoader", this.changeLoader);
+    window.addEventListener("popupMessageEvent", this.popupMessageEvent);
   },
   mounted(){
     let vue = this;
@@ -51,11 +68,18 @@ export default {
       })
   },
   destroyed(){
-    window.removeEventListener("changeLoader",this.changeLoader)
+    window.removeEventListener("changeLoader",this.changeLoader);
+    window.removeEventListener("popupMessageEvent", this.popupMessageEvent);
   },
   methods:{
     changeLoader(e){
       this.loader = e.detail.loader;
+    },
+    popupMessageEvent(e){
+      console.log(e);
+      this.popupMessage = e.detail.popupMessage.popupMessage;
+      this.popupType = e.detail.popupMessage.popupType;
+      this.triggerPopup = e.detail.popupMessage.triggerPopup;
     },
     login(e){
       let vue = this;

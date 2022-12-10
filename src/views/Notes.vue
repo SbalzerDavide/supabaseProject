@@ -83,7 +83,7 @@ export default {
     }
   }
   .view{
-    min-height: 100vh;
+    min-height: calc(100vh - 104px);
   }
   .slide-enter-active {
     transition: all .5s;

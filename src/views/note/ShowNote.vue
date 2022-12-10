@@ -105,7 +105,7 @@ export default {
 
 <style lang="scss">
   .show-note{
-    padding: 12px;
+    // padding: 12px;
     .noteType{
     }
   }

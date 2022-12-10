@@ -51,6 +51,10 @@ input:not([type="checkbox"]){
   border: 1px solid #444;
 }
 
+input[type="checkbox"]{
+  accent-color: var(--color-3);
+}
+
 // hide arrow on input type number
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -74,7 +78,7 @@ input[type=number] {
   select{
     background-color: #444;
     border: 1px solid #888;
-    color: white;
+    color: #ddd;
   }
   input:not([type="checkbox"]){
     background-color: #444;

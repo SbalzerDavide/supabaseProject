@@ -350,6 +350,7 @@ export default{
       &.active{
         color: var(--primary-color);
         border-color: var(--primary-color);
+        background-color: var(--color-3);
       }
     }  
   }

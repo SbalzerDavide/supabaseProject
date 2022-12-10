@@ -2,6 +2,7 @@ body{
   --border-radius: 4px;
 }
 
+
 .theme-light{
   --background: #fff;  
   --opacity-layer: rgba(0,0,0, .1);
@@ -11,7 +12,7 @@ body{
   --text-color: #222;
   --primary-color: #DC136C;
 
-  --background-hover: #ccc;
+  --background-hover: #eee;
   --background-component: #eee;
   --background-primary: #58A4B0;
   --contrast-primary: #fff;
@@ -44,6 +45,10 @@ body{
   --color-3: #F1B5CB;
   --color-4: #495867;
   --color-5: #FFF689;
+
+  *{
+    color: #ddd;
+  }
 
 }
 

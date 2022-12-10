@@ -1,13 +1,15 @@
 <template>
-  <div class="notes d-flex flex-direction-column flex-grow">
-    <PopupMessage 
+  <div class="new-note d-flex flex-direction-column flex-grow">
+    <!-- <PopupMessage 
       :content="popupMessage" 
       position="center"
       :type="popupType" 
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
-    />
-    <h1>new note</h1>
+    /> -->
+    <div class="header d-flex">
+      <h1>new note</h1>
+    </div>
     <div class="new d-flex flex-direction-column flex-grow">
       <div class="type">
         <select v-model="type" name="types">
@@ -40,14 +42,17 @@
 <script>
 import FreeNote from "../../components/notes/types/FreeNote.vue";
 import CountNote from "../../components/notes/types/CountNote.vue";
-import PopupMessage from "../../components/PopupMessage.vue"
+// import PopupMessage from "../../components/PopupMessage.vue"
+import popupMessageMixin from "../../mixins/sendPopupMessage.js"
+
 
 export default {
   name: 'Notes',
+  mixins: [popupMessageMixin],
   components: {
     FreeNote,
     CountNote,
-    PopupMessage
+    // PopupMessage
   },
   props: {
     
@@ -63,9 +68,9 @@ export default {
         "todo"
       ],
       type: "free",
-      popupMessage: "",
-      popupType: "",
-      triggerPopup: false
+      // popupMessage: "",
+      // popupType: "",
+      // triggerPopup: false
     }
   },
   created(){
@@ -76,20 +81,41 @@ export default {
   },
   methods:{
     showMessage(e){
-      this.triggerPopup = true;
-      this.popupMessage = e.message;
-      this.popupType = e.type;      
+      // this.triggerPopup = true;
+      // this.popupMessage = e.message;
+      // this.popupType = e.type;
+      let popupMessage = {
+        popupMessage: e.message,
+        triggerPopup: true,
+        popupType: e.type
+      }      
+      this.sendPopupMessage(popupMessage)
     },
   }
 }
 </script>
 
 <style lang="scss">
-  .new{
-    select{
-      width: 100%;
+  .notes{
+    .header{
+      justify-content: center;
+      margin-bottom: 8px;
+      h1{
+        padding-bottom: 3px;
+        border-bottom: 3px solid var(--color-3);
+      }
     }
-    .noteType{
+    .new{
+      select{
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      input{
+        margin-bottom: 8px;
+      }
+      // .type{
+      //   margin-bottom: 8px;
+      // }
     }
   }
 </style>

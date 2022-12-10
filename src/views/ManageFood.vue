@@ -111,8 +111,10 @@ export default {
         align-items: center;
         color: var(--opacity-text);
         cursor: pointer;
+        transition: all .2s;
         &.active{
           color: var(--text-color);
+          transform: scale(1.1);
         }
         svg{
           font-size: 28px;
