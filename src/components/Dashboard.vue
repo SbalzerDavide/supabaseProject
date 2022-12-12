@@ -7,7 +7,12 @@
         :key="index"
         @click="goTo(app.value)"
       >
+      <div class="icon">
+        <font-awesome-icon :icon="app.icon" />
+      </div>
+      <div class="title">
         {{ app.title }}
+      </div>
       </div>
     </div>
   </div>
@@ -25,15 +30,18 @@ export default {
       appList: [
         {
           title: "note",
-          value: "notes/list"
+          value: "notes/list",
+          icon: "fa-solid fa-clipboard"
         },
         {
           title: "organizza cibo",
-          value: "manageFood"
+          value: "manageFood",
+          icon: "fa-solid fa-burger"
         },
         {
           title: "turni",
-          value: "manageShift"
+          value: "manageShift",
+          icon: "fa-solid fa-calendar"
         },
       ],
     }
@@ -55,12 +63,32 @@ export default {
       flex-wrap: wrap;
     }
     .app{
+      display: flex;
       width: 100%;
-      padding: 10px;
+      height: 60px;
+      border-radius: var(--border-radius);
+      border-radius: 10px;
+      background-color: var(--background-hover);
+      margin: 8px;
+      overflow: hidden;
       cursor: pointer;
-      // per adesos gestico colore in questo modo semplificato, ma da rivedere
-      &:hover{
-        background-color: var(--background-hover);
+      .icon{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        background-color: var(--color-3);
+        svg{
+          height: 28px;
+          & *{
+            color: #222 !important;
+          }
+        }
+      }
+      .title{
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
       }
     }
   }

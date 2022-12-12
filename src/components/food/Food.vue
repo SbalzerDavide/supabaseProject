@@ -31,7 +31,6 @@
             type="text"
             v-model="food.name"
             placeholder="Alimento"
-            @keyup="checkAvailableSave"
             @keyup.enter="save"
           >
           <h3 v-else>{{ food.title }}</h3>
