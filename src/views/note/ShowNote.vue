@@ -2,7 +2,7 @@
   <div class="show-note d-flex flex-direction-column flex-grow">
     <PopupMessage 
       :content="popupMessage" 
-      position="center"
+      position="bottom"
       :type="popupType" 
       :show="triggerPopup" 
       @showBack="triggerPopup=false"

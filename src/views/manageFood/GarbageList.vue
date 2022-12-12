@@ -5,6 +5,25 @@
         <h1>Garbage list</h1>
       </div>
     </div>
+    <div class="filter d-flex">
+      <div class="active-filter">
+      </div>
+      <div class="change-filter">
+        <div class="selected" @click="showOptions = true">
+          {{ activeFilter }}
+        </div>
+        <div class="background-options"></div>
+        <div v-show="showOptions" class="options">
+          <div 
+            class="option"
+            v-for="(filter, index) in filterTypes"
+            :key="index"
+          >
+            {{ index }}
+          </div>
+        </div>
+      </div>
+    </div>
     <ul>
       <li 
         v-for="(food, index) in garbageList"
@@ -41,7 +60,13 @@ export default {
   data(){
     return{
       user: {},
-      garbageList: []
+      garbageList: [],
+      filterTypes: [
+        "Settimana",
+        "Mese",
+        "Anno"
+      ],
+      activeFilter: ""
     }
   },
   created(){
@@ -58,6 +83,7 @@ export default {
         el.selected = false;
       })
     })
+    this.activeFilter = this.filterTypes[0];
   },
   methods:{
     getGarbageList(){
@@ -109,5 +135,9 @@ export default {
         // color: var(--contrast-primary);
       }
     }
+  }
+  .filter{
+    justify-content: space-between;
+    padding: 0 12px;
   }
 </style>

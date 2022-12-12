@@ -170,7 +170,7 @@ export default{
       calendarDate: Object,
       deadlineValueFormat: "",
       inputDays: 0,
-      availableSave: false
+      availableSave: true,
     }
   },
   created(){

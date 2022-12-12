@@ -59,8 +59,8 @@ export default {
     return{
       user: {},
       main: true,
-      default: "new",
-      activePanel: "new"
+      default: "storagelist",
+      activePanel: ""
     }
   },
   created(){
@@ -72,6 +72,7 @@ export default {
       this.main = false;
     }
     if(this.default !==""){
+      this.activePanel = this.default;
       this.goTo(this.default)
     }
 
