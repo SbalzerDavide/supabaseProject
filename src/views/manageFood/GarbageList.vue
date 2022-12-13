@@ -6,8 +6,12 @@
       </div>
     </div>
     <div class="filter d-flex">
-      <div class="active-filter">
-        {{ period }}
+      <div class="active-filter unselectable">
+        <font-awesome-icon @click="comeBack" icon="fa-solid fa-chevron-left" />
+        <span>
+          {{ period }}
+        </span>
+        <font-awesome-icon @click="goOn" icon="fa-solid fa-chevron-right" />
       </div>
       <div class="change-filter">
         <div class="selected unselectable" @click="showOptions = true">
@@ -76,10 +80,15 @@ export default {
         // "Settimana",
         "Anno"
       ],
-      activeFilter: ""
+      activeFilter: "",
+      period: "",
+      activePeriod: {},
+      today: Date
     }
   },
   created(){
+    this.today = new Date();
+
     let stringUserData = window.sessionStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
@@ -94,20 +103,55 @@ export default {
       })
     })
     this.activeFilter = this.filterTypes[0];
-    this.getDate();
+
+    this.changeFilter(this.activeFilter)
+    this.activePeriod.date = this.today;
   },
   methods:{
-    getDate(){
-      let today = new Date();
-      let month = today.getMonth();
-      console.log(month);
-      let year = today.getFullYear();
-      console.log(year);
-      this.period = `${month} / ${year}`
+    comeBack(){
+      if(this.activeFilter == "Anno"){
+        this.activePeriod.year--;
+        this.period = this.activePeriod.year;
+        this.activePeriod.date = new Date(this.activePeriod.year, 0)
+
+      } else if(this.activeFilter == "Mese"){
+        if(this.activePeriod.month > 0){
+          this.activePeriod.month--;
+        } else{
+          this.activePeriod.month = 11;
+          this.activePeriod.year--;
+        }
+        this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`
+        this.activePeriod.date = new Date(this.activePeriod.year, this.activePeriod.month)
+      }
+      console.log(this.activePeriod.date);
+    },
+    goOn(){
+      if(this.activeFilter == "Anno"){
+        this.activePeriod.year++;
+        this.period = this.activePeriod.year;
+      } else if(this.activeFilter == "Mese"){
+        if(this.activePeriod.month > 10){
+          this.activePeriod.month = 0;
+          this.activePeriod.year++;
+        } else{
+          this.activePeriod.month++;
+        }
+        this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`
+      }
     },
     changeFilter(filter){
       this.activeFilter = filter;
       this.showOptions = false;
+      this.activePeriod.year = this.today.getFullYear(); 
+      this.activePeriod.month = this.today.getMonth(); 
+      let year = this.today.getFullYear();
+      let month = this.today.getMonth() +1;
+      if(filter == "Anno"){
+        this.period = year;
+      } else if(filter == "Mese"){
+        this.period = `${month} / ${year}`;
+      }
     } , 
     getGarbageList(){
       return new Promise((resolve, reject)=>{
@@ -161,6 +205,7 @@ export default {
   }
   .filter{
     justify-content: space-between;
+    align-items: center;
     padding: 0 12px;
     position: relative;
     .background-options{
