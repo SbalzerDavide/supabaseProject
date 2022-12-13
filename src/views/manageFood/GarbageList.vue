@@ -7,19 +7,28 @@
     </div>
     <div class="filter d-flex">
       <div class="active-filter">
+        {{ period }}
       </div>
       <div class="change-filter">
-        <div class="selected" @click="showOptions = true">
+        <div class="selected unselectable" @click="showOptions = true">
           {{ activeFilter }}
+          <span v-if="!showOptions">
+            <font-awesome-icon icon="fa-solid fa-chevron-down" />
+          </span>
+          <span v-else>
+            <font-awesome-icon  icon="fa-solid fa-chevron-up" />
+          </span>
+
         </div>
-        <div class="background-options"></div>
+        <div v-show="showOptions" @click="showOptions = false" class="background-options"></div>
         <div v-show="showOptions" class="options">
           <div 
             class="option"
             v-for="(filter, index) in filterTypes"
             :key="index"
+            @click="changeFilter(filter)"
           >
-            {{ index }}
+            {{ filter }} 
           </div>
         </div>
       </div>
@@ -60,10 +69,11 @@ export default {
   data(){
     return{
       user: {},
+      showOptions: false,
       garbageList: [],
       filterTypes: [
-        "Settimana",
         "Mese",
+        // "Settimana",
         "Anno"
       ],
       activeFilter: ""
@@ -84,8 +94,21 @@ export default {
       })
     })
     this.activeFilter = this.filterTypes[0];
+    this.getDate();
   },
   methods:{
+    getDate(){
+      let today = new Date();
+      let month = today.getMonth();
+      console.log(month);
+      let year = today.getFullYear();
+      console.log(year);
+      this.period = `${month} / ${year}`
+    },
+    changeFilter(filter){
+      this.activeFilter = filter;
+      this.showOptions = false;
+    } , 
     getGarbageList(){
       return new Promise((resolve, reject)=>{
         let vue = this;
@@ -139,5 +162,34 @@ export default {
   .filter{
     justify-content: space-between;
     padding: 0 12px;
+    position: relative;
+    .background-options{
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .selected{
+      padding: 3px 8px;
+      width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-color-light);
+      border-radius: var(--border-radius);
+    }
+    .options{
+      position: absolute;
+      background-color: white;
+      border: 1px solid var(--border-color-light);
+      border-radius: var(--border-radius);
+      top: 120%;
+      right: 10px;
+      width: 180px;
+      .option{
+        padding: 5px 10px;
+      }
+    }
   }
 </style>
