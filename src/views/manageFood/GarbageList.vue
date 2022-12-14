@@ -95,20 +95,25 @@ export default {
     }
     let vue = this;
     this.changeLoader(true);
-    this.getGarbageList().then((data)=>{
-      this.changeLoader(false);
-      vue.garbageList = data;
-      vue.garbageList.forEach(el=>{
-        el.selected = false;
-      })
-    })
     this.activeFilter = this.filterTypes[0];
 
     this.changeFilter(this.activeFilter)
     this.activePeriod.date = this.today;
+    this.getGarbageList().then((data)=>{
+      this.changeLoader(false);
+      console.log(data);
+      if(data != null && data.length > 0){
+        vue.garbageList = data;
+        vue.garbageList.forEach(el=>{
+          el.selected = false;
+        })
+      }
+    })
   },
   methods:{
     comeBack(){
+      let vue = this;
+
       if(this.activeFilter == "Anno"){
         this.activePeriod.year--;
         this.period = this.activePeriod.year;
@@ -125,8 +130,19 @@ export default {
         this.activePeriod.date = new Date(this.activePeriod.year, this.activePeriod.month)
       }
       console.log(this.activePeriod.date);
+      this.getGarbageList().then((data)=>{
+      this.changeLoader(false);
+      console.log(data);
+      if(data != null && data.length > 0){
+        vue.garbageList = data;
+        vue.garbageList.forEach(el=>{
+          el.selected = false;
+        })
+      }
+    })
     },
     goOn(){
+      let vue = this;
       if(this.activeFilter == "Anno"){
         this.activePeriod.year++;
         this.period = this.activePeriod.year;
@@ -137,7 +153,18 @@ export default {
         } else{
           this.activePeriod.month++;
         }
-        this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`
+        this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`;
+        this.getGarbageList().then((data)=>{
+        this.changeLoader(false);
+          console.log(data);
+          if(data != null && data.length > 0){
+            vue.garbageList = data;
+            vue.garbageList.forEach(el=>{
+              el.selected = false;
+            })
+          }
+        })
+
       }
     },
     changeFilter(filter){
@@ -156,12 +183,31 @@ export default {
     getGarbageList(){
       return new Promise((resolve, reject)=>{
         let vue = this;
+        let from;
+        let to;
+        if(this.activeFilter === "Anno"){
+          from = `${this.activePeriod.year}-01-01`;
+          to = `${this.activePeriod.year + 1}-01-01`;
+        } else if(this.activeFilter === "Mese"){
+          let month = this.activePeriod.month;
+          from = `${this.activePeriod.year}-${this.activePeriod.month + 1}-01`;
+          if(month > 10){
+            to = `${this.activePeriod.year + 1}-01-01`;
+          } else{            
+            to = `${this.activePeriod.year}-${this.activePeriod.month + 2}-01`;
+          }
+        }
         supabase
           .from("food")
           .select()
           .eq('user_id', vue.user.id)
           .eq('garbage', true)
-          .order("garbageDate")
+          // .rangeAdjacent('garbageDate', '[2022-01-01, 2022-01-01 )')
+          // .lt('garbageDate', "2022-12-01")
+          .lt('garbageDate', to)
+          // .gt('garbageDate', "2022-11-01")
+          .gt('garbageDate', from)
+          .order("garbageDate", {ascending: false})
           .then((data)=>{
             resolve(data.data);
           })
@@ -208,12 +254,23 @@ export default {
     align-items: center;
     padding: 0 12px;
     position: relative;
+    .active-filter{
+      display: flex;
+      justify-content: space-between;
+      width: 140px;
+      span{
+        flex-grow: 1;
+        text-align: center;
+        // width: 80px;
+      }
+    }
     .background-options{
       position: fixed;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
+      z-index: 8;
     }
     .selected{
       padding: 3px 8px;
@@ -226,7 +283,7 @@ export default {
     }
     .options{
       position: absolute;
-      background-color: white;
+      background-color: var(--background-component);
       border: 1px solid var(--border-color-light);
       border-radius: var(--border-radius);
       top: 120%;
