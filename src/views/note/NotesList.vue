@@ -11,7 +11,7 @@
       <font-awesome-icon icon="fa-solid fa-plus" />
     </button>
     <div class="header">
-      <h1>Note</h1>
+      <h1>Note ({{ this.notes.length }})</h1>
     </div>
 
     <!-- panel confermata delete -->

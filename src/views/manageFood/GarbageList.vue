@@ -94,11 +94,11 @@ export default {
       this.user = JSON.parse(stringUserData);
     }
     let vue = this;
-    this.changeLoader(true);
     this.activeFilter = this.filterTypes[0];
 
     this.changeFilter(this.activeFilter)
     this.activePeriod.date = this.today;
+    this.changeLoader(true);
     this.getGarbageList().then((data)=>{
       this.changeLoader(false);
       console.log(data);
@@ -107,18 +107,18 @@ export default {
         vue.garbageList.forEach(el=>{
           el.selected = false;
         })
+      } else{
+        vue.garbageList = []
       }
     })
   },
   methods:{
     comeBack(){
       let vue = this;
-
       if(this.activeFilter == "Anno"){
         this.activePeriod.year--;
         this.period = this.activePeriod.year;
         this.activePeriod.date = new Date(this.activePeriod.year, 0)
-
       } else if(this.activeFilter == "Mese"){
         if(this.activePeriod.month > 0){
           this.activePeriod.month--;
@@ -129,23 +129,25 @@ export default {
         this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`
         this.activePeriod.date = new Date(this.activePeriod.year, this.activePeriod.month)
       }
-      console.log(this.activePeriod.date);
+      this.changeLoader(true);
       this.getGarbageList().then((data)=>{
-      this.changeLoader(false);
-      console.log(data);
-      if(data != null && data.length > 0){
-        vue.garbageList = data;
-        vue.garbageList.forEach(el=>{
-          el.selected = false;
-        })
-      }
-    })
+        this.changeLoader(false);
+        if(data != null && data.length > 0){
+          vue.garbageList = data;
+          vue.garbageList.forEach(el=>{
+            el.selected = false;
+          })
+        } else{
+          vue.garbageList = []
+        }
+      })
     },
     goOn(){
       let vue = this;
       if(this.activeFilter == "Anno"){
         this.activePeriod.year++;
         this.period = this.activePeriod.year;
+        this.activePeriod.date = new Date(this.activePeriod.year, 0)
       } else if(this.activeFilter == "Mese"){
         if(this.activePeriod.month > 10){
           this.activePeriod.month = 0;
@@ -154,18 +156,20 @@ export default {
           this.activePeriod.month++;
         }
         this.period = `${this.activePeriod.month + 1} / ${this.activePeriod.year}`;
-        this.getGarbageList().then((data)=>{
-        this.changeLoader(false);
-          console.log(data);
-          if(data != null && data.length > 0){
-            vue.garbageList = data;
-            vue.garbageList.forEach(el=>{
-              el.selected = false;
-            })
-          }
-        })
-
+        this.activePeriod.date = new Date(this.activePeriod.year, this.activePeriod.month)
       }
+      this.changeLoader(true);
+      this.getGarbageList().then((data)=>{
+        this.changeLoader(false);
+        if(data != null && data.length > 0){
+          vue.garbageList = data;
+          vue.garbageList.forEach(el=>{
+            el.selected = false;
+          })
+        } else{
+          vue.garbageList = []
+        }
+      })
     },
     changeFilter(filter){
       this.activeFilter = filter;
@@ -202,10 +206,7 @@ export default {
           .select()
           .eq('user_id', vue.user.id)
           .eq('garbage', true)
-          // .rangeAdjacent('garbageDate', '[2022-01-01, 2022-01-01 )')
-          // .lt('garbageDate', "2022-12-01")
           .lt('garbageDate', to)
-          // .gt('garbageDate', "2022-11-01")
           .gt('garbageDate', from)
           .order("garbageDate", {ascending: false})
           .then((data)=>{
@@ -289,6 +290,7 @@ export default {
       top: 120%;
       right: 10px;
       width: 180px;
+      z-index: 9;
       .option{
         padding: 5px 10px;
       }
