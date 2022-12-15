@@ -23,11 +23,12 @@
           name="content" 
           cols="30" 
           v-model="note.content"
+          @input="changeTextarea = true"
         >
         </textarea>
       </div>
     </div>
-    <div class="action">
+    <div v-if="mode=='edit' || (changeTextarea || enabledInputTitle)" class="action">
       <button @click="save" class="btn btn-primary">Save</button>
     </div>
 
@@ -55,7 +56,8 @@ export default {
       edit: true,
       note: Object,
       // in seguito attivare questa variabile solo al click oppure se nuova nota sempre true
-      enabledInputTitle: false
+      enabledInputTitle: false,
+      changeTextarea: false,
     }
   },
   // computed: {

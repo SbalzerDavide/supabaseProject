@@ -25,6 +25,7 @@
         </button>
       </div>
     </div>
+    
     <div 
       class="panel-delete-background"
       :class="panelDelete ? 'show' : 'hide'"

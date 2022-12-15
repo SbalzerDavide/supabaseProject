@@ -7,7 +7,7 @@
       :show="triggerPopup" 
       @showBack="triggerPopup=false"
     />
-    <div v-show="selected > 0" class="storage-list-appbar">
+    <div v-show="selectedList.length > 0" class="storage-list-appbar">
       <div @click="removeSelection" class="back">
         <font-awesome-icon icon="fa-solid fa-arrow-left" />
       </div>
@@ -17,7 +17,7 @@
           <font-awesome-icon icon="fa-solid fa-trash" />
         </button>
 
-        <button class="btn btn-primary">
+        <button @click="multipleList" class="btn btn-primary">
           List
           <font-awesome-icon icon="fa-solid fa-box" />
         </button>
@@ -69,7 +69,7 @@
         :key="index"
       >
         <div class="storage-food d-flex" :class="setDeadlineClass(el)">
-          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :id="el.name" type="checkbox">
+          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
           <div class="missing-days">
             {{ el.missingDays }}
           </div>
@@ -115,7 +115,8 @@ export default {
       storageListOriginal: [],
       storageList: [],
       panelDelete: false,
-      selected: 0,
+      selectedList: [],
+      // selected: 0,
       selectedIndex: Number,
       popupMessage: "",
       popupType: "",
@@ -163,23 +164,30 @@ export default {
       }
     },
     removeSelection(){
-      this.selected = 0;
+      this.selectedList = [];
       this.storageList.forEach(el => {
         el.selected = false;
       });
     },
     multipleAction(){
-      if(this.selected > 0){
+      if(this.selectedList.length > 0){
         let selectedEl = this.shoppingList.filter(el=>el.selected);
         console.log(selectedEl);
       }
     },
+    multipleList(){
+
+    },
     changeCheckbox(e){
+      let index = e.target.getAttribute("index");
       if(e.target.checked){
-        this.selected++;
+        this.selectedList.push(index);
       } else if(!e.target.checked){
-        this.selected--;
+        if(this.selectedList.indexOf(index)>= 0){
+          this.selectedList.splice(this.selectedList.indexOf(index), 1)
+        }
       }
+      console.log(this.selectedList);
     },
     getStorageList(){
       return new Promise((resolve, reject)=>{

@@ -101,7 +101,6 @@ export default {
     this.changeLoader(true);
     this.getGarbageList().then((data)=>{
       this.changeLoader(false);
-      console.log(data);
       if(data != null && data.length > 0){
         vue.garbageList = data;
         vue.garbageList.forEach(el=>{
