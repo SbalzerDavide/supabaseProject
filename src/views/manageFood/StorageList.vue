@@ -12,15 +12,15 @@
         <font-awesome-icon icon="fa-solid fa-arrow-left" />
       </div>
       <div class="action">
-        <button class="btn btn-primary">
+        <button @click="multipleStore" class="btn btn-primary">
           Delete
           <font-awesome-icon icon="fa-solid fa-trash" />
         </button>
 
-        <button @click="multipleList" class="btn btn-primary">
+        <!-- <button @click="multipleList" class="btn btn-primary">
           List
           <font-awesome-icon icon="fa-solid fa-box" />
-        </button>
+        </button> -->
       </div>
     </div>
 
@@ -30,6 +30,7 @@
     >
       <div class="blurred" @click="panelDelete = false"></div>
       <div class="panel-delete d-flex flex-direction-column">
+        <h2>{{ actualEl.name }}</h2>
         <div class="choice d-flex">
           <button class="btn btn-primary" @click="eatenFood">
             Alimento consumato
@@ -113,6 +114,7 @@ export default {
     return{
       user: {},
       storageListOriginal: [],
+      actualEl: Object,
       storageList: [],
       panelDelete: false,
       selectedList: [],
@@ -175,7 +177,20 @@ export default {
         console.log(selectedEl);
       }
     },
-    multipleList(){
+    multipleStore(){
+      if(this.selectedList.length > 0){
+        this.panelDelete = true;
+        this.managePanel();
+      }
+    },
+    managePanel(){
+      // let vue = this;
+      if(this.selectedList.length > 0){
+        // quello visualizzato è sempre il primo quindi piano piano li tolgo 
+        this.actualEl = this.storageList[this.selectedList[0]];
+      } else{
+        console.log("ho finito quindi chiudo il pannello");
+      }
 
     },
     changeCheckbox(e){

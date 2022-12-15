@@ -25,7 +25,7 @@
         </button>
       </div>
     </div>
-    
+
     <div 
       class="panel-delete-background"
       :class="panelDelete ? 'show' : 'hide'"
@@ -248,7 +248,7 @@ export default {
           vue.shoppingList.forEach(el=>{
             el.selected = false;
           })
-    })
+        })
       });
     },
     multipleDelete(){
@@ -357,13 +357,11 @@ export default {
     changeCheckbox(e){
       let index = e.target.getAttribute("index");
       if(e.target.checked){
-        // this.selected++;
         this.selectedList.push(index);
       } else if(!e.target.checked){
         if(this.selectedList.indexOf(index)>= 0){
           this.selectedList.splice(this.selectedList.indexOf(index), 1)
         }
-        // this.selected--;
       }
     },
     getShoppingList(){
