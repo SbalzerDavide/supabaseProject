@@ -35,7 +35,7 @@
           <button class="btn btn-primary" @click="eatenFood">
             Alimento consumato
           </button>
-          <button class="btn" @click="toGarbage">
+          <button class="btn" @click="toGarbageNew">
             Alimento buttato
           </button>
         </div>
@@ -184,12 +184,24 @@ export default {
       }
     },
     managePanel(){
-      // let vue = this;
+      let vue = this;
       if(this.selectedList.length > 0){
         // quello visualizzato è sempre il primo quindi piano piano li tolgo 
         this.actualEl = this.storageList[this.selectedList[0]];
       } else{
         console.log("ho finito quindi chiudo il pannello");
+        this.panelDelete = false;
+        this.getStorageList().then((data)=>{
+          vue.storageList = data;
+          vue.storageListOriginal = data;
+          let today = new Date();
+          vue.storageList.forEach(el=>{
+            let elDate = new Date(el.deadline);
+            el.selected = false;
+            var timeinmilisec = elDate.getTime() - today.getTime();
+            el.missingDays = Math.ceil(timeinmilisec / (1000 * 60 * 60 * 24));
+          })
+        })
       }
 
     },
@@ -212,6 +224,7 @@ export default {
           .select()
           .eq('user_id', vue.user.id)
           .eq('shoppingList', false)
+          .neq('garbage', true)
           .order("deadline")
           .then((data)=>{
             resolve(data.data);
@@ -258,6 +271,46 @@ export default {
         .catch((err)=>{
           console.log(err);
         })
+    },
+    toGarbageNew(){
+      let vue = this;
+      let garbageFood = {
+        deadline: this.actualEl.deadline,
+        id: this.actualEl.id,
+        name: this.actualEl.name,
+        garbage: true,
+        garbageDate: new Date()
+      }
+      let saved = false;
+      supabase
+        .from("food")
+        .update(garbageFood)
+        .eq('id', garbageFood.id)
+        .select()
+        .then((data)=>{
+          if("data" in data && data.data.length > 0){
+            saved = true;
+            console.log(data);
+            vue.selectedList.splice(0, 1);
+            // popup operazione andata a buon fine
+            vue.popupMessage = `${garbageFood.name} buttato!`
+            vue.popupType = "success";
+            vue.triggerPopup = true;
+  
+            vue.managePanel();
+            // vue.storageList.splice(vue.selectedIndex, 1);
+          }
+        })
+        .catch((error)=>{
+          if(!saved){
+            console.log(error);
+            vue.popupMessage = `Attenzione, errore nello spostemento`;
+            vue.popupType = "error";
+            vue.triggerPopup = true;
+          }
+
+        })
+
     },
     toGarbage(){
       let vue = this;

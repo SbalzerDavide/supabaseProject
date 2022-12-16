@@ -317,14 +317,14 @@ export default {
             vue.popupType = "success";
             vue.triggerPopup = true;
       
-            this.managePanel();
+            vue.managePanel();
           }
         })
         .catch((error)=>{
           // sono sicuro che non sia stato salvato se passa dalla catch e saved è rimasto === false
           if(!saved){
             console.log(error);
-            vue.popupMessage = `Attensione, errore nello spostemento`;
+            vue.popupMessage = `Attenzione, errore nello spostemento`;
             vue.popupType = "error";
             vue.triggerPopup = true;
           }

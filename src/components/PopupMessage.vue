@@ -71,6 +71,7 @@ export default {
     left: 50%;
     padding: 5px;
     border-radius: var(--border-radius);
+    z-index: 10;
     .cloud-arrow{
       display: none;
     }
