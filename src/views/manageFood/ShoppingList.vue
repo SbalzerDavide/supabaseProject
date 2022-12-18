@@ -111,7 +111,7 @@
         <font-awesome-icon icon="fa-solid fa-box" />
       </button> -->
     </div>
-    <ul>
+    <ul :class="selectedList.length > 0 ? 'anable-select' : ''">
       <li 
         class="d-flex"
         v-for="(el, index) in shoppingList" 
@@ -122,9 +122,9 @@
           <label :for="el.name">{{ el.name }}</label>
         </div>
         <div class="operation d-flex">
-          <div class="edit">
+          <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
-          </div>
+          </div> -->
           <!-- <div @click="deleteEl(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div> -->
@@ -486,10 +486,26 @@ export default {
         width: 80px;
       }
     }
+    input[type='checkbox']{
+      opacity: 0;
+      transition: all .5s;
+    }
+    .anable-select{
+      input[type='checkbox']{
+        opacity: 1;
+      }
+      li{
+        left: 0;
+      }
+    }
+
     li{
       align-items: center;
       justify-content: space-between;
       padding: 12px;
+      position: relative;
+      left: -24px;
+      transition: all .5s;
       input[type=checkbox]{
         margin-right: 8px;
         width: 20px;

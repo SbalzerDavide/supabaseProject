@@ -45,6 +45,8 @@ export default {
   },
   mounted(){
     this.getProfiles();
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
   },
   methods:{
     getProfiles(){
@@ -88,7 +90,7 @@ export default {
     .work-area{
       margin: 80px auto 0 auto;
       max-width: 1200px;
-      height: calc(100vh - 80px);
+      height: calc((var(--vh, 1vh) * 100) - 80px);
       // display: flex;
       // flex-direction: column;
       overflow: auto;

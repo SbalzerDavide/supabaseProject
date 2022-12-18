@@ -28,20 +28,25 @@
       class="panel-delete-background" 
       :class="panelDelete ? 'show' : 'hide'"
     >
-      <div class="blurred" @click="panelDelete = false"></div>
+      <div class="blurred" @click="cancelPanel"></div>
       <div class="panel-delete d-flex flex-direction-column">
-        <h2>{{ actualEl.name }}</h2>
+        <div @click="cancelPanel" class="cancel">
+          <font-awesome-icon icon="fa-solid fa-x" />
+        </div>
+        <div class="food-name">
+          {{ actualEl.name }}
+        </div>
         <div class="choice d-flex">
           <button class="btn btn-primary" @click="eatenFood">
             Alimento consumato
           </button>
-          <button class="btn" @click="toGarbageNew">
+          <button class="btn" @click="toGarbage">
             Alimento buttato
           </button>
         </div>
         <div class="addToShoppingList">
           <label for="addToShoppingList">Inserisci a lista della spesa</label>
-          <input type="checkbox" name="addToShoppingList" id="addToShoppingList">
+          <input v-model="enableAddToShoppingList" type="checkbox" name="addToShoppingList" id="addToShoppingList">
         </div>
       </div>
 
@@ -63,31 +68,33 @@
       </button> -->
     </div>
 
-    <ul>
-      <li 
+    <ul :class="selectedList.length > 0 ? 'anable-select' : ''">
+      <li
         class="d-flex"
         v-for="(el, index) in storageList" 
         :key="index"
       >
         <div class="storage-food d-flex" :class="setDeadlineClass(el)">
           <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
-          <div class="missing-days">
-            {{ el.missingDays }}
-          </div>
-          <div class="list-name">
-            {{ el.name }}
-          </div>
+          <label class="d-flex" :for="el.name">
+            <div class="missing-days">
+              {{ el.missingDays }}
+            </div>
+            <div class="list-name">
+              {{ el.name }}
+            </div>
+          </label>
         </div>
         <div class="operation d-flex">
           <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </div> -->
-          <div @click="deleteFood(index)" class="delete">
+          <!-- <div @click="deleteFood(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div>
           <div class="toShopping">
               <font-awesome-icon icon="fa-solid fa-cart-shopping" />
-          </div>
+          </div> -->
 
         </div>
       </li>
@@ -118,8 +125,6 @@ export default {
       storageList: [],
       panelDelete: false,
       selectedList: [],
-      // selected: 0,
-      selectedIndex: Number,
       popupMessage: "",
       popupType: "",
       triggerPopup: false,
@@ -129,7 +134,8 @@ export default {
         "Dispensa",
         "Freezer"
       ],
-      storageFilter: "All"
+      storageFilter: "All",
+      enableAddToShoppingList: false
     }
   },
   created(){
@@ -190,6 +196,7 @@ export default {
         this.actualEl = this.storageList[this.selectedList[0]];
       } else{
         console.log("ho finito quindi chiudo il pannello");
+        this.enableAddToShoppingList = false;
         this.panelDelete = false;
         this.getStorageList().then((data)=>{
           vue.storageList = data;
@@ -247,32 +254,34 @@ export default {
       }
       return deadlineClass;
     },
-    deleteFood(index){
-      this.panelDelete = true;
-      this.selectedIndex = index
-    },
     eatenFood(){
       let vue = this;
       supabase
         .from('food')
         .delete()
-        .eq('id', this.storageList[this.selectedIndex].id)
-        .then((data)=>{
-          console.log(data);
+        .eq('id', this.actualEl.id)
+        .then(()=>{
           // popup operazione andata a buon fine
-          // popup operazione andata a buon fine
-          vue.popupMessage = `${vue.storageList[this.selectedIndex].name} contrassegnato come mangiato!`
+          vue.popupMessage = `${vue.actualEl.name} contrassegnato come mangiato!`
           vue.popupType = "success";
           vue.triggerPopup = true;
 
-          vue.storageList.splice(vue.selectedIndex, 1);
-          vue.panelDelete = false;
+          if(vue.enableAddToShoppingList){
+            console.log("aggiungo anche a lista della spesa");
+            vue.toShoppingList().then(()=>{
+              vue.selectedList.splice(0, 1);
+              vue.managePanel();
+            })
+          } else{
+            vue.selectedList.splice(0, 1);
+            vue.managePanel();
+          }
         })
         .catch((err)=>{
           console.log(err);
         })
     },
-    toGarbageNew(){
+    toGarbage(){
       let vue = this;
       let garbageFood = {
         deadline: this.actualEl.deadline,
@@ -290,15 +299,20 @@ export default {
         .then((data)=>{
           if("data" in data && data.data.length > 0){
             saved = true;
-            console.log(data);
-            vue.selectedList.splice(0, 1);
             // popup operazione andata a buon fine
             vue.popupMessage = `${garbageFood.name} buttato!`
             vue.popupType = "success";
             vue.triggerPopup = true;
-  
-            vue.managePanel();
-            // vue.storageList.splice(vue.selectedIndex, 1);
+            if(vue.enableAddToShoppingList){
+              console.log("aggiungo anche a lista della spesa");
+              vue.toShoppingList().then(()=>{
+                vue.selectedList.splice(0, 1);
+                vue.managePanel();
+              })
+            } else{
+              vue.selectedList.splice(0, 1);
+              vue.managePanel();
+            }
           }
         })
         .catch((error)=>{
@@ -308,38 +322,40 @@ export default {
             vue.popupType = "error";
             vue.triggerPopup = true;
           }
-
         })
-
     },
-    toGarbage(){
+    toShoppingList(){
+      return new Promise((resolve, reject)=>{
+        let toShopping = {
+          shoppingList: true,
+          name: this.actualEl.name,
+          description: this.actualEl.description,
+          user_id: this.actualEl.user_id,
+          category: this.actualEl.category
+        }
+
+        supabase
+          .from("food")
+          .insert(toShopping)
+          .select()
+          .then((data)=>{
+            resolve(data.data);
+          })
+          .catch((err)=>{
+            reject(err);
+          })
+      })
+    },
+    cancelPanel(){
       let vue = this;
-      let garbageFood = {
-        deadline: this.storageList[this.selectedIndex].deadline,
-        id: this.storageList[this.selectedIndex].id,
-        name: this.storageList[this.selectedIndex].name,
-        garbage: true,
-        garbageDate: new Date()
-      }
-      supabase
-        .from("food")
-        .update(garbageFood)
-        .eq('id', garbageFood.id)
-        .select()
-        .then((data)=>{
-          console.log(data);
-          // popup operazione andata a buon fine
-          vue.popupMessage = `${garbageFood.name} buttato!`
-          vue.popupType = "success";
-          vue.triggerPopup = true;
-
-          vue.storageList.splice(vue.selectedIndex, 1);
-          vue.panelDelete = false;
-        })
-        .catch((error)=>{
-          console.log(error);
-        })
-
+      this.panelDelete = false;
+      this.storageList.forEach((el, index)=>{
+        if(vue.selectedList.includes(index.toString())){
+          el.selected = true;
+        } else{
+        el.selected = false;
+        }
+      }) 
     }
   }
 }
@@ -392,13 +408,25 @@ export default {
         margin-left: 8px;
       }
     }
+    input[type='checkbox']{
+      opacity: 0;
+      transition: all .5s;
+    }
+    .anable-select{
+      input[type='checkbox']{
+        opacity: 1;
+      }
+      li{
+        left: 0;
+      }
+    }
     li{
       align-items: center;
       justify-content: space-between;
       padding: 12px;
-      .storageFood{
-
-      }
+      position: relative;
+      left: -24px;
+      transition: all .5s;
       .missing-days{
         width: 40px;
         margin: 0 8px;
@@ -461,6 +489,19 @@ export default {
         top: 0;
         backdrop-filter: blur(0px);
       }
+      .cancel{
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: 5px;
+        right: 5px;
+        border-radius: 10px;
+        background-color: var(--primary-color);
+        color: var(--contrast-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       &.show{
         z-index: 1;
         .blurred{
@@ -497,8 +538,14 @@ export default {
         border-radius: var(--border-radius);
         border: 1px solid var(--border-color);
         justify-content: space-between;
+        align-items: flex-start;
         transition: all .2s;
         overflow: hidden;
+      }
+      .food-name{
+        font-size: 22px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid var(--primary-color);
       }
       .choice{
         justify-content: space-between;
@@ -512,6 +559,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        width: 100%;
         input[type=checkbox]{
           width: 20px;
           height: 20px;
