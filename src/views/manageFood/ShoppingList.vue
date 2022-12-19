@@ -117,7 +117,7 @@
         v-for="(el, index) in shoppingList" 
         :key="index"
       >
-        <div class="d-flex">
+        <div class="content d-flex">
           <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
           <label :for="el.name">{{ el.name }}</label>
         </div>
@@ -125,12 +125,12 @@
           <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </div> -->
-          <!-- <div @click="deleteEl(index)" class="delete">
+          <div @click="deleteEl(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
-          </div> -->
-          <!-- <div @click="storePanel(index)" class="toStorage">
+          </div>
+          <div @click="storePanel(index)" class="toStorage">
             <font-awesome-icon icon="fa-solid fa-box" />
-          </div> -->
+          </div>
         </div>
       </li>
     </ul>
@@ -486,10 +486,6 @@ export default {
         width: 80px;
       }
     }
-    input[type='checkbox']{
-      opacity: 0;
-      transition: all .5s;
-    }
     .anable-select{
       input[type='checkbox']{
         opacity: 1;
@@ -497,22 +493,38 @@ export default {
       li{
         left: 0;
       }
+      .operation{
+        left: 70px;
+        opacity: 0;
+      }
     }
-
+    
     li{
       align-items: center;
       justify-content: space-between;
       padding: 12px;
       position: relative;
-      left: -24px;
+      left: -30px;
       transition: all .5s;
       input[type=checkbox]{
         margin-right: 8px;
         width: 20px;
         height: 20px;
+        opacity: 0;
+        transition: all .3s;
+      }
+      .content{
+        flex-grow: 1;
+        label{
+          flex-grow: 1;
+        }
       }
       .operation{
+        position: relative;
+        opacity: 1;
+        left: 30px;
         cursor: pointer;
+        transition: all .3s;
         svg{
           font-size: 20px;
           margin: 0 8px;

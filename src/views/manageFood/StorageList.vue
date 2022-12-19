@@ -89,12 +89,12 @@
           <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </div> -->
-          <!-- <div @click="deleteFood(index)" class="delete">
+          <div @click="deleteFood(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div>
           <div class="toShopping">
               <font-awesome-icon icon="fa-solid fa-cart-shopping" />
-          </div> -->
+          </div>
 
         </div>
       </li>
@@ -408,10 +408,6 @@ export default {
         margin-left: 8px;
       }
     }
-    input[type='checkbox']{
-      opacity: 0;
-      transition: all .5s;
-    }
     .anable-select{
       input[type='checkbox']{
         opacity: 1;
@@ -419,13 +415,17 @@ export default {
       li{
         left: 0;
       }
+      .operation{
+        opacity: 0;
+        left: 70px;
+      }
     }
     li{
       align-items: center;
       justify-content: space-between;
       padding: 12px;
       position: relative;
-      left: -24px;
+      left: -35px;
       transition: all .5s;
       .missing-days{
         width: 40px;
@@ -463,9 +463,21 @@ export default {
         margin-right: 8px;
         width: 20px;
         height: 20px;
+        opacity: 0;
+        transition: all .3s;
+      }
+      .storage-food{
+        flex-grow: 1;
+        label{
+          flex-grow: 1;
+        }
       }
       .operation{
+        position: relative;
+        left: 35px;
+        opacity: 1;
         cursor: pointer;
+        transition: all .3s;
         svg{
           font-size: 20px;
           margin: 0 8px;
