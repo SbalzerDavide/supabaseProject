@@ -190,18 +190,8 @@ export default {
   },
   methods:{
     deleteEl(index){
-      let vue = this;
-      supabase
-        .from('food')
-        .delete()
-        .eq('id', this.shoppingList[index].id)
-        .then((data)=>{
-          console.log(data);
-          vue.shoppingList.splice(index, 1);
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
+      this.selectedList = [index.toString()];
+      this.panelDelete = true;
     },
     removeSelection(){
       this.selectedList = [];
@@ -251,16 +241,16 @@ export default {
         })
       });
     },
-    multipleDelete(){
-      let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
-      tempShoppingList.forEach((el, index)=>{
-        if(this.selectedList.includes(index.toString())){
-          this.shoppingList.splice(index, 1);
-          console.log(el);
-        }
-      })
-      this.panelDelete = false;
-    },
+    // multipleDelete(){
+    //   let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
+    //   tempShoppingList.forEach((el, index)=>{
+    //     if(this.selectedList.includes(index.toString())){
+    //       this.shoppingList.splice(index, 1);
+    //       console.log(el);
+    //     }
+    //   })
+    //   this.panelDelete = false;
+    // },
     multipleStore(){
       if(this.selectedList.length > 0){
         this.panelStore = true;
@@ -544,6 +534,7 @@ export default {
       position: fixed;
       padding-top: 20px;
       background-color: var(--background);
+      z-index: 1;
       &.show{
         top: 80px;
         bottom: 60px;
