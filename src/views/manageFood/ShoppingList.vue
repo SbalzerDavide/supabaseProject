@@ -34,7 +34,7 @@
       <div class="panel-delete d-flex flex-direction-column">
         <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
         <div class="action d-flex">
-          <button @click="panelDelete = false" class="btn">
+          <button @click="cancelDelete" class="btn">
             Annulla
           </button>
           <button @click="manageMultipleDelete" class="btn btn-primary">
@@ -192,6 +192,7 @@ export default {
     deleteEl(index){
       this.selectedList = [index.toString()];
       this.panelDelete = true;
+      this.shoppingList[index].selected = true;
     },
     removeSelection(){
       this.selectedList = [];
@@ -319,6 +320,10 @@ export default {
             vue.triggerPopup = true;
           }
         })
+    },
+    cancelDelete(){
+      this.panelDelete = false;
+      this.selectedList = [];
     },
     storePanel(index){
       this.selectedIndex = index;

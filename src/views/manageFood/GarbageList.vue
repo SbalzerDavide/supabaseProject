@@ -1,5 +1,5 @@
 <template>
-  <div class="shopping-list d-flex flex-direction-column flex-grow">
+  <div class="garbage-list d-flex flex-direction-column flex-grow">
     <div class="header d-flex">
       <div class="d-flex">
         <h1>Garbage list</h1>
@@ -222,7 +222,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .shopping-list{
+  .garbage-list{
     .header{
       justify-content: space-between;
       padding: 0 12px;

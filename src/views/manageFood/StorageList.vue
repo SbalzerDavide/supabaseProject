@@ -89,12 +89,12 @@
           <!-- <div class="edit">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </div> -->
-          <div @click="deleteFood(index)" class="delete">
+          <div @click="deleteEl(index)" class="delete">
             <font-awesome-icon icon="fa-solid fa-trash" />      
           </div>
-          <div class="toShopping">
+          <!-- <div class="toShopping">
               <font-awesome-icon icon="fa-solid fa-cart-shopping" />
-          </div>
+          </div> -->
 
         </div>
       </li>
@@ -159,6 +159,13 @@ export default {
     })
   },
   methods:{
+    deleteEl(index){
+      index = parseInt(index);
+      this.selectedList = [index.toString()];
+      this.panelDelete = true;
+      this.storageList[index].selected = true;
+      this.actualEl = this.storageList[index];
+    },
     applyFilter(){
       let vue = this;
       if(this.storageFilter == "All"){
