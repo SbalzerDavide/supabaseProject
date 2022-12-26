@@ -34,9 +34,9 @@
       <div class="panel-delete d-flex flex-direction-column">
         <h4>Sei sicuro di voler eliminare gli elementi selezionati?</h4>
         <div class="action d-flex">
-          <button @click="cancelDelete" class="btn">
+          <!-- <button @click="cancelDelete" class="btn">
             Annulla
-          </button>
+          </button> -->
           <button @click="manageMultipleDelete" class="btn btn-primary">
             Conferma
           </button>
@@ -45,37 +45,41 @@
       </div>
     </div>
     <div 
-      class="panel-store d-flex flex-direction-column" 
+      class="panel-store-background" 
       :class="panelStore ? 'show' : 'hide'"
     >
-      <div class="close" @click="closePanelStore">
-        <font-awesome-icon icon="fa-solid fa-xmark" />
-      </div>
-        <h2>
-          {{ actualEl.name }}
-        </h2>
+      <div class="blurred" @click="panelStore = false"></div>
+      <div class="panel-store d-flex flex-direction-column">
+        <!-- <div class="close" @click="closePanelStore">
+          <font-awesome-icon icon="fa-solid fa-xmark" />
+        </div> -->
+        <div class="panel-store-title d-flex">
+          <h2>
+            {{ actualEl.name }}
+          </h2>
+        </div>
         <div class="content flex-grow">
           <div class="deadline d-flex flex-direction-column">
             <h4>Scadenza - {{ deadlineValueFormat }}</h4>
               <div class="single-radio">
               <input type="radio" id="3days" name="deadline" value="3" @change="modifyDeadline(false, 3)">
-              <label for="3days">3 days</label>
+              <label for="3days">3 giorni</label>
             </div>
             <div class="single-radio">
-              <input type="radio" id="week" name="deadline" value="7" @change="modifyDeadline(false, 7)">
-              <label for="week">One week</label>
+              <input type="radio" id="week" name="deadline" value="7" checked @change="modifyDeadline(false, 7)">
+              <label for="week">1 settimana</label>
             </div>
             <!-- Inserrimento dinamico numero di giorni -->
             <div class="single-radio input-radio">
               <input type="radio" id="input" name="deadline" :value="inputDays" @change="modifyDeadline(false, inputDays)">
-              <label ref="radioInput" for="input">Tra quanti giorni?
+              <label ref="radioInput" for="input">Giorni
                 <input @change="modifyDeadline(false, inputDays, 'radioInput')" type="number" v-model="inputDays">
               </label>
             </div>
             <!-- inserimento dinamico da calendario -->
             <div class="single-radio calendar-radio">
               <input type="radio" id="calendar" name="deadline" :value="calendarDate" @change="modifyDeadline(true)">
-              <label ref="radioCalendar" for="calendar">Seleziona una data
+              <label ref="radioCalendar" for="calendar">Data
                 <input @change="modifyDeadline(true, null, 'radioCalendar')" type="date" v-model="calendarDate">
               </label>
             </div>
@@ -96,13 +100,14 @@
           </div>
         </div>
         <div class="action d-flex">
-          <button @click="cancelMoveToStore" class="btn">
+          <!-- <button @click="cancelMoveToStore" class="btn">
             Annulla
-          </button>
+          </button> -->
           <button @click="moveToStoreNew" class="btn btn-primary">
             Move to store
           </button>
         </div>
+      </div>
     </div>
     <div class="header d-flex">
       <h1>shopping list</h1>
@@ -171,6 +176,15 @@ export default {
       popupMessage: "",
       popupType: "",
       triggerPopup: false 
+    }
+  },
+  watch:{
+    panelStore(newVal){
+      // quando chiudo pannello azzero valori data di scadenza
+      if(!newVal){
+        this.deadlineValue = "";
+        this.deadlineValueFormat = "";
+      }
     }
   },
   created(){
@@ -255,6 +269,7 @@ export default {
     multipleStore(){
       if(this.selectedList.length > 0){
         this.panelStore = true;
+        this.modifyDeadline(false, 7)
         this.managePanel();
       }
     },
@@ -328,6 +343,7 @@ export default {
     storePanel(index){
       this.selectedIndex = index;
       this.panelStore = true;
+      this.modifyDeadline(false, 7)
       let obj = this.shoppingList[index];
       this.actualEl = obj;
       this.actualEl.storage = "Frigorifero";
@@ -409,7 +425,7 @@ export default {
     }
   }
   .shopping-list{
-    .panel-delete-background{
+    .panel-delete-background, .panel-store-background{
       position: fixed;
       top: 0;
       bottom: 0;
@@ -435,11 +451,14 @@ export default {
           left: 0;
           backdrop-filter: blur(5px);
         }
-        .panel-delete{
+        .panel-delete, .panel-store{
           width: 90%;
-          height: 180px;
+          // height: 180px;
           padding: 20px;
           opacity: 1;
+        }
+        .panel-store{
+          height: 70%;
         }
       }
       &.hide{
@@ -451,9 +470,9 @@ export default {
           right: 50%;
           overflow: hidden;
         }
-        .panel-delete{
+        .panel-delete, .panel-store{
           width: 60%;
-          height: 100px;
+          height: 70px;
           opacity: 0;
         }
       }
@@ -465,6 +484,9 @@ export default {
         justify-content: space-between;
         transition: all .2s;
         overflow: hidden;
+        h4{
+          padding-bottom: 20px;
+        }
         button{
           height: 50px;
         }
@@ -531,15 +553,20 @@ export default {
       .action{
         justify-content: space-between;
         button{
-          width: 40%;
+          width: 100%;
         }
       }
     }
     .panel-store{
-      position: fixed;
-      padding-top: 20px;
-      background-color: var(--background);
-      z-index: 1;
+        position: absolute;
+        background-color: var(--background-component);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        width: 90%;
+        padding: 10px;
+        transition: all .2s;
+        overflow: hidden;
+        z-index: 1;
       &.show{
         top: 80px;
         bottom: 60px;
@@ -554,11 +581,16 @@ export default {
         right: 50%;
         overflow: hidden;
       }
+      .panel-store-title{
+        justify-content: center;
+      }
       h2{
-        text-align: center;
-        padding: 8px;
-        color: var(--primary-color);
-        font-size: 25px;
+        padding-bottom: 3px;
+        border-bottom: 3px solid var(--color-3); 
+        font-weight: 700;
+      }
+      h4{
+        margin-bottom: 10px;
       }
       .close{
         position: absolute;
@@ -572,7 +604,6 @@ export default {
         svg{
           height: 30px;
         }
-        // font-size: 25px;
       }
       .deadline{
         margin: 8px 0;
@@ -588,7 +619,10 @@ export default {
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 150px;
+            width: 170px;
+            &[type="number"]{
+              text-align: right;
+            }
           }
         }
         input[type=radio]{
@@ -610,11 +644,11 @@ export default {
       }
 
       .action{
-        justify-content: flex-end;
+        justify-content: space-between;
         button{
-          width: 150px;
+          // width: 150px;
+          width: 100%;
           height: 50px;
-          margin-left: 20px;
         }
       }
     }

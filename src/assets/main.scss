@@ -64,7 +64,7 @@ input:not([type="checkbox"]){
   border: 1px solid #444;
 }
 
-input[type="checkbox"]{
+input[type="checkbox"], input[type="radio"]{
   accent-color: var(--color-3);
 }
 

@@ -30,11 +30,13 @@
     >
       <div class="blurred" @click="cancelPanel"></div>
       <div class="panel-delete d-flex flex-direction-column">
-        <div @click="cancelPanel" class="cancel">
+        <!-- <div @click="cancelPanel" class="cancel">
           <font-awesome-icon icon="fa-solid fa-x" />
-        </div>
+        </div> -->
         <div class="food-name">
-          {{ actualEl.name }}
+          <h4>
+            {{ actualEl.name }}
+          </h4>
         </div>
         <div class="choice d-flex">
           <button class="btn btn-primary" @click="eatenFood">
@@ -51,7 +53,7 @@
       </div>
 
     </div>
-    <div class="header d-flex">
+    <!-- <div class="header-old d-flex">
         <h1>Storage list</h1>
         <select @change="applyFilter" name="storage" v-model="storageFilter">
           <option 
@@ -62,10 +64,19 @@
             {{ storage }}
           </option>
         </select>
-      <!-- <button @click="multipleAction" class="btn btn-primary">
-        Store
-        <font-awesome-icon icon="fa-solid fa-box" />
-      </button> -->
+    </div> -->
+    <div class="header d-flex">
+      <div class="filter">
+        <div class="box"
+          :class="index == activeFilter ? 'active' : ''"
+          v-for="(storage, index) in storages" 
+          :key="index" 
+          :value="storage"
+          @click="filterStorage(index)"
+        >
+          {{ storage }}
+        </div>
+      </div>
     </div>
 
     <ul :class="selectedList.length > 0 ? 'anable-select' : ''">
@@ -134,7 +145,8 @@ export default {
         "Dispensa",
         "Freezer"
       ],
-      storageFilter: "All",
+      activeFilter: 0,
+      // storageFilter: "All",
       enableAddToShoppingList: false
     }
   },
@@ -166,14 +178,27 @@ export default {
       this.storageList[index].selected = true;
       this.actualEl = this.storageList[index];
     },
-    applyFilter(){
+    // applyFilter(){
+    //   let vue = this;
+    //   if(this.storageFilter == "All"){
+    //     this.storageList = this.storageListOriginal;
+    //   } else{
+    //     this.storageList = this.storageListOriginal.filter(el=>{
+    //       if("storage" in el && el.storage !== null){
+    //         return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
+    //       }
+    //     });
+    //   }
+    // },
+    filterStorage(index){
+      this.activeFilter = index;
       let vue = this;
-      if(this.storageFilter == "All"){
+      if(this.storages[index] == "All"){
         this.storageList = this.storageListOriginal;
       } else{
         this.storageList = this.storageListOriginal.filter(el=>{
           if("storage" in el && el.storage !== null){
-            return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
+            return el.storage.toLowerCase() === vue.storages[index] .toLowerCase();
           }
         });
       }
@@ -397,7 +422,7 @@ export default {
     }
   }
   .storage-list{
-    .header{
+    .header-old{
       justify-content: space-between;
       align-items: center;
       padding: 0 12px;
@@ -413,6 +438,23 @@ export default {
       }
       select{
         margin-left: 8px;
+      }
+    }
+    .header{
+      overflow: auto;
+      .filter{
+        display: flex;
+        margin: 5px 0;
+        .box{
+          padding: 5px;
+          margin: 0 5px;
+          border: 1px solid var(--primary-color);
+          border-radius: 10px;
+          &.active{
+            background-color: var(--primary-color);
+            color: var(--contrast-primary);
+          }
+        }
       }
     }
     .anable-select{
@@ -509,7 +551,7 @@ export default {
         backdrop-filter: blur(0px);
       }
       .cancel{
-        position: absolute;
+        position: fixed;
         width: 30px;
         height: 30px;
         top: 5px;
@@ -522,7 +564,7 @@ export default {
         justify-content: center;
       }
       &.show{
-        z-index: 1;
+        z-index: 5;
         .blurred{
           top: 0;
           bottom: 0;
@@ -562,9 +604,14 @@ export default {
         overflow: hidden;
       }
       .food-name{
+        display: flex;
+        justify-content: center;
+        width: 100%;
         font-size: 22px;
-        padding-bottom: 5px;
-        border-bottom: 2px solid var(--primary-color);
+        h4{
+          padding-bottom: 5px;
+          border-bottom: 2px solid var(--primary-color);
+        }
       }
       .choice{
         justify-content: space-between;

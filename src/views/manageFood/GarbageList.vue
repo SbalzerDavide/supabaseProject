@@ -242,7 +242,7 @@ export default {
         margin-right: 8px;
         width: 30px;
         height: 30px;
-        border-radius: 50%;
+        border-radius: 10px;
         background-color: var(--color-3);
         color: black;
         // color: var(--contrast-primary);
