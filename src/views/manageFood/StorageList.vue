@@ -53,7 +53,8 @@
       </div>
 
     </div>
-    <!-- <div class="header-old d-flex">
+
+    <div v-if="filterType == 1" class="header-old d-flex">
         <h1>Storage list</h1>
         <select @change="applyFilter" name="storage" v-model="storageFilter">
           <option 
@@ -64,14 +65,25 @@
             {{ storage }}
           </option>
         </select>
-    </div> -->
-    <div class="header d-flex">
-      <div class="filter">
-        <div class="box"
+    </div>
+    <div v-else-if="filterType == 2" class="header d-flex">
+      <div 
+        class="filter"
+        :class="isFiltered ? 'filtered' : ''"
+      >
+        <div 
+          class="cancel-filter box" 
+          :class="isFiltered ? 'show' : ''"
+          @click="cancelFilter"
+        >
+          <font-awesome-icon icon="fa-solid fa-x" />
+        </div>
+        <div class="box box-filter"
           :class="index == activeFilter ? 'active' : ''"
           v-for="(storage, index) in storages" 
           :key="index" 
           :value="storage"
+          v-show="!isFiltered || (isFiltered && index != 0)"
           @click="filterStorage(index)"
         >
           {{ storage }}
@@ -146,7 +158,9 @@ export default {
         "Freezer"
       ],
       activeFilter: 0,
-      // storageFilter: "All",
+      filterType: 2,
+      storageFilter: "All",
+      isFiltered: false,
       enableAddToShoppingList: false
     }
   },
@@ -178,30 +192,38 @@ export default {
       this.storageList[index].selected = true;
       this.actualEl = this.storageList[index];
     },
-    // applyFilter(){
-    //   let vue = this;
-    //   if(this.storageFilter == "All"){
-    //     this.storageList = this.storageListOriginal;
-    //   } else{
-    //     this.storageList = this.storageListOriginal.filter(el=>{
-    //       if("storage" in el && el.storage !== null){
-    //         return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
-    //       }
-    //     });
-    //   }
-    // },
+    applyFilter(){
+      let vue = this;
+      if(this.storageFilter == "All"){
+        this.storageList = this.storageListOriginal;
+      } else{
+        this.storageList = this.storageListOriginal.filter(el=>{
+          if("storage" in el && el.storage !== null){
+            return el.storage.toLowerCase() === vue.storageFilter.toLowerCase();
+          }
+        });
+      }
+    },
     filterStorage(index){
       this.activeFilter = index;
       let vue = this;
       if(this.storages[index] == "All"){
         this.storageList = this.storageListOriginal;
+        this.isFiltered = false;
       } else{
         this.storageList = this.storageListOriginal.filter(el=>{
           if("storage" in el && el.storage !== null){
+            vue.isFiltered = true;
             return el.storage.toLowerCase() === vue.storages[index] .toLowerCase();
           }
         });
+
       }
+    },
+    cancelFilter(){
+      this.storageList = this.storageListOriginal;
+      this.isFiltered = false;
+      this.activeFilter = 0;
     },
     removeSelection(){
       this.selectedList = [];
@@ -445,14 +467,42 @@ export default {
       .filter{
         display: flex;
         margin: 5px 0;
+        &.filtered{
+          .box-filter{
+            left: 0 !important;
+          }
+        }
         .box{
-          padding: 5px;
+          padding: 5px 10px;
           margin: 0 5px;
           border: 1px solid var(--primary-color);
-          border-radius: 10px;
+          border-radius: 15px;
+          transition: all .4s;
+          &.box-filter{
+            position: relative;
+            left: -42px;
+          }
           &.active{
             background-color: var(--primary-color);
             color: var(--contrast-primary);
+          }
+          &.cancel-filter{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            position: relative;
+            left: -40px;
+            transition: all .4s;
+            svg{
+              height: 15px;
+              width: 15px;
+            }
+            &.show{
+              left: 0;
+            }
           }
         }
       }
