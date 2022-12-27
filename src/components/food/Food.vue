@@ -328,8 +328,9 @@ export default{
   .food-appbar{
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     background-color: var(--background-primary);
     display: flex;
     justify-content: flex-end;

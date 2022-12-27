@@ -88,7 +88,7 @@ export default {
   #app{
     background-color: var(--background);
     .work-area{
-      margin: 80px auto 0 auto;
+      margin: 60px auto 0 auto;
       max-width: 1200px;
       height: calc((var(--vh, 1vh) * 100) - 80px);
       // display: flex;

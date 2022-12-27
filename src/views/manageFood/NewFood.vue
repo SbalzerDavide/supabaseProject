@@ -21,11 +21,12 @@
 // import { supabase } from '../../../supabase';
 import Food from "../../components/food/Food.vue";
 import PopupMessage from "../../components/PopupMessage.vue";
-
+import setAppbarTitle from "../../mixins/setAppbarTitle.js"
 
 
 export default {
   name: 'NewFood',
+  mixins: [setAppbarTitle],
   components: {
     Food,
     PopupMessage
@@ -40,6 +41,7 @@ export default {
     }
   },
   created(){
+    this.setAppbarTitle("New food");
   },
   methods:{
     showMessage(e){

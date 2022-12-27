@@ -129,12 +129,14 @@
 import { supabase } from '../../supabase';
 // import Food from "../../components/food/Food.vue";
 import PopupMessage from "../../components/PopupMessage.vue";
-import loaderMixin from "../../mixins/loaderMixin.js"
+import loaderMixin from "../../mixins/loaderMixin.js";
+import setAppbarTitle from "../../mixins/setAppbarTitle.js"
+
 
 
 export default {
   name: 'StorageList',
-  mixins: [loaderMixin],
+  mixins: [loaderMixin, setAppbarTitle],
   components: {
     PopupMessage,
   },
@@ -165,6 +167,7 @@ export default {
     }
   },
   created(){
+    this.setAppbarTitle("Storage List");
     let stringUserData = window.sessionStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
@@ -419,8 +422,9 @@ export default {
   .storage-list-appbar{
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     background-color: var(--background-primary);
     display: flex;
     justify-content: space-between;

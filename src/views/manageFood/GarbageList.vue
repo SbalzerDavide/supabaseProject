@@ -61,11 +61,13 @@
 
 <script>
 import { supabase } from '../../supabase';
-import loaderMixin from "../../mixins/loaderMixin.js"
+import loaderMixin from "../../mixins/loaderMixin.js";
+import setAppbarTitle from "../../mixins/setAppbarTitle.js"
+
 
 export default {
   name: 'ShoppingList',
-  mixins: [loaderMixin],
+  mixins: [loaderMixin, setAppbarTitle],
   components: {
   },
   props: {
@@ -87,6 +89,7 @@ export default {
     }
   },
   created(){
+    this.setAppbarTitle("Garbage List");
     this.today = new Date();
 
     let stringUserData = window.sessionStorage.getItem("userData");
