@@ -77,11 +77,13 @@ export default {
         justify-content: center;
         align-items: center;
         width: 70px;
-        background-color: var(--color-3);
+        // background-color: var(--color-3);
+        background-color: var(--primary-color);
         svg{
           height: 28px;
           & *{
-            color: #222 !important;
+            // color: #222 !important;
+            color: #eee !important;
           }
         }
       }

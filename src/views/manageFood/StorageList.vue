@@ -442,7 +442,7 @@ export default {
     }
     button{
       margin-left: 20px;
-      height: 45px;
+      height: 40px;
       width: 120px;
       font-size: 20px;
     }

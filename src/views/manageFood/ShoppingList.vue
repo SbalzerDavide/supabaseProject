@@ -423,8 +423,8 @@ export default {
     }
     button{
       margin-left: 20px;
-      height: 45px;
-      width: 120px;
+      height: 40px;
+      width: 115px;
       font-size: 20px;
     }
   }

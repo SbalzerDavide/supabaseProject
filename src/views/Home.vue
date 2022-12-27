@@ -24,11 +24,13 @@ import { supabase } from "../supabase.js";
 import AccountMoreInfo from "../components/AccountMoreInfo.vue";
 import AppBar from "../components/AppBar.vue";
 import Dashboard from "../components/Dashboard.vue";
+import setAppbarTitle from "../mixins/setAppbarTitle.js"
 
 
 
 export default {
   name: 'App',
+  mixins: [setAppbarTitle],
   components: {
     AccountMoreInfo,
     AppBar,
@@ -43,7 +45,10 @@ export default {
       showMoreInfo: false,
     }
   },
+  created(){
+    },
   mounted(){
+    this.setAppbarTitle("Home");
     this.getProfiles();
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);

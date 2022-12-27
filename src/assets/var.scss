@@ -25,6 +25,28 @@ body{
   --color-5: #FFF689;
 }
 
+.theme-light{
+  --background: #fff;  
+  --opacity-layer: rgba(0,0,0, .1);
+
+  // color
+  --opacity-text: rgba(0,0,0, .5);
+  --text-color: #222;
+  --primary-color: #296EB4;
+
+  --background-hover: #eee;
+  --background-component: #e3e0e8;
+  --background-primary: #FDB833;
+  --contrast-primary: #fff;
+
+  --border-color: #000;
+  --border-color-light: #555;
+  
+  --color-3: #86BBBD;
+  --color-4: #FFF689;
+  --color-5: #D44D5C;
+}
+
 .theme-dark{
   --background: #222;  
   --opacity-layer: rgba(255, 255, 255, .1);

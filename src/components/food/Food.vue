@@ -335,10 +335,10 @@ export default{
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 12px;
     z-index: 5;
     button{
-      height: 50px;
+      height: 40px;
       width: 40%;
     }
   }
@@ -346,11 +346,11 @@ export default{
     justify-content: space-between;
     button{
       width: 44%;
-      height: 50px;
+      height: 40px;
       &.active{
         color: var(--primary-color);
         border-color: var(--primary-color);
-        background-color: var(--color-3);
+        background-color: var(--background-primary);
       }
     }  
   }
