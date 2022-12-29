@@ -16,6 +16,7 @@
 //   //   ]
 //   // }
 // }
+var path = require('path')
 
 module.exports = {
   // options...
@@ -24,6 +25,13 @@ module.exports = {
     index:{
       entry: 'src/main.js',
       template: 'public/index.html'
+    },
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        src: path.resolve(__dirname, 'src')
+      }
     },
   },
   //devServer: { https: true },

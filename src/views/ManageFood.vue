@@ -78,7 +78,6 @@ export default {
 
   },
   updated(){
-    console.log("updated");
     let path = window.location.href;
     this.activePanel = path.split("/")[path.split("/").length - 1];
   },  
@@ -115,7 +114,7 @@ export default {
         color: var(--opacity-text);
         cursor: pointer;
         transition: all .2s;
-        &.active{
+        &.active *{
           // color: var(--text-color);
           color: var(--primary-color);
           transform: scale(1.1);

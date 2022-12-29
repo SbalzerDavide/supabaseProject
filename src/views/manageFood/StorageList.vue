@@ -419,35 +419,36 @@ export default {
 </script>
 
 <style lang="scss">
-  .storage-list-appbar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: var(--background-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    z-index: 4;
-    .back{
+  .storage-list{
+    @import "src/assets/partials/panel.scss"; 
+    .storage-list-appbar{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: var(--background-primary);
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      svg{
+      padding: 0 20px;
+      z-index: 4;
+      .back{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        svg{
+          height: 40px;
+        }
+      }
+      button{
+        margin-left: 20px;
         height: 40px;
+        width: 120px;
+        font-size: 20px;
       }
     }
-    button{
-      margin-left: 20px;
-      height: 40px;
-      width: 120px;
-      font-size: 20px;
-    }
-  }
-  .storage-list{
     .header-old{
       justify-content: space-between;
       align-items: center;
@@ -468,6 +469,9 @@ export default {
     }
     .header{
       overflow: auto;
+      position: absolute;
+      background-color: var(--background);
+      z-index: 1;
       .filter{
         display: flex;
         margin: 5px 0;
@@ -522,6 +526,9 @@ export default {
         opacity: 0;
         left: 70px;
       }
+    }
+    ul{
+      margin-top: 45px;
     }
     li{
       align-items: center;
@@ -588,74 +595,8 @@ export default {
       }
     }
     .panel-delete-background{
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      padding: 12px;
-      padding-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      .blurred{
-        height: 100%;
-        position: absolute;
-        top: 0;
-        backdrop-filter: blur(0px);
-      }
-      .cancel{
-        position: fixed;
-        width: 30px;
-        height: 30px;
-        top: 5px;
-        right: 5px;
-        border-radius: 10px;
-        background-color: var(--primary-color);
-        color: var(--contrast-primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      &.show{
-        z-index: 5;
-        .blurred{
-          top: 0;
-          bottom: 0;
-          right: 0;
-          left: 0;
-          backdrop-filter: blur(5px);
-        }
-        .panel-delete{
-          width: 90%;
-          height: 180px;
-          padding: 20px;
-        }
-      }
-      &.hide{
-        z-index: -1;
-        .blurred{
-          top: 50%;
-          bottom: 50%;
-          left: 50%;
-          right: 50%;
-          overflow: hidden;
-        }
-        .panel-delete{
-          width: 0%;
-          height: 0;
-        }
-
-      }
       .panel-delete{
-        position: absolute;
-        background-color: var(--background-component);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--border-color);
-        justify-content: space-between;
-        align-items: flex-start;
-        transition: all .2s;
-        overflow: hidden;
+        height: 180px;
       }
       .food-name{
         display: flex;

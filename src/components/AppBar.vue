@@ -43,7 +43,6 @@ export default {
   },
   methods:{
     setAppbarTitle(e){
-      console.log(e);
       if("title" in e.detail){
         this.title = e.detail.title
       }

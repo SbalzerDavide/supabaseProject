@@ -1,6 +1,7 @@
 <template>
   <div class="food d-flex flex-direction-column flex-grow">
     <div v-show="availableSave" class="food-appbar">
+      <font-awesome-icon @click="$router.go(-1)" icon="fa-solid fa-arrow-left" />
       <button @click="save" class="btn btn-primary">
         Save
       </button>
@@ -10,14 +11,14 @@
       <div class="mode d-flex">
         <button 
           class="btn"
-          :class="food.shoppingList == true ? 'active' : ''"
+          :class="food.shoppingList == true ? 'active' : 'disable'"
           @click="food.shoppingList = true"
         >
           Shopping list
         </button>
         <button 
           class="btn"
-          :class="food.shoppingList == false ? 'active' : ''"
+          :class="food.shoppingList == false ? 'active' : 'disable'"
           @click="food.shoppingList = false"
         >
           Storage
@@ -56,15 +57,15 @@
         </select>
       </div>
       <div v-show="!food.shoppingList" class="deadline">
-        <!-- <h5 @click="openSetDeadline = true">Imposta scadenza</h5> -->
-        <button @click="openSetDeadline = true" class="btn">
-          Imposta scadenza
+        <!-- <h5 @click="panelDeadline = true">Imposta scadenza</h5> -->
+        <button @click="openPanelDeadline" class="btn btn-primary btn-deadline">
+          Scadenza
+          <span v-show="deadlineValueFormat !== ''"> - </span>
+          <span>
+            {{ deadlineValueFormat }}
+          </span>
         </button>
-        <span>
-          {{ deadlineValueFormat }}
-        </span>
-        <div v-show="openSetDeadline" class="radio d-flex flex-direction-column">
-          <!-- valori preimpostati, in cui alla funzione vengono passati i giorni -->
+        <!-- <div v-show="panelDeadline" class="radio d-flex flex-direction-column">
           <div class="single-radio">
             <input type="radio" id="3days" name="deadline" value="3" @change="modifyDeadline(false, 3)">
             <label for="3days">3 days</label>
@@ -73,14 +74,12 @@
             <input type="radio" id="week" name="deadline" value="7" @change="modifyDeadline(false, 7)">
             <label for="week">One week</label>
           </div>
-          <!-- Inserrimento dinamico numero di giorni -->
           <div class="single-radio input-radio">
             <input type="radio" id="input" name="deadline" :value="inputDays" @change="modifyDeadline(false, inputDays)">
             <label ref="radioInput" for="input">Tra quanti giorni?
               <input @change="modifyDeadline(false, inputDays, 'radioInput')" type="number" v-model="inputDays">
             </label>
           </div>
-          <!-- inserimento dinamico da calendario -->
           <div class="single-radio calendar-radio">
             <input type="radio" id="calendar" name="deadline" :value="calendarDate" @change="modifyDeadline(true)">
             <label ref="radioCalendar" for="calendar">Seleziona una data dal calendario
@@ -88,11 +87,55 @@
             </label>
           </div>
           <div class="set">
-            <button @click="openSetDeadline = false" class="btn btn-primary">
+            <button @click="panelDeadline = false" class="btn btn-primary">
+              Imposta
+            </button>
+          </div>
+        </div> -->
+      <div 
+        class="panel-store-background" 
+        :class="panelDeadline ? 'show' : 'hide'"
+      >
+        <div class="blurred" @click="panelDeadline = false"></div>
+        <div class="panel-store d-flex flex-direction-column">
+          <div class="panel-store-title d-flex">
+            <h2>
+              {{ food.name }}
+            </h2>
+          </div>
+          <div class="content flex-grow">
+            <div class="deadline d-flex flex-direction-column">
+              <h4>Scadenza - {{ deadlineValueFormat }}</h4>
+                <div class="single-radio">
+                <input type="radio" id="3days" name="deadline" value="3" @change="modifyDeadline(false, 3)">
+                <label for="3days">3 giorni</label>
+              </div>
+              <div class="single-radio">
+                <input type="radio" id="week" name="deadline" value="7" checked @change="modifyDeadline(false, 7)">
+                <label for="week">1 settimana</label>
+              </div>
+              <div class="single-radio input-radio">
+                <input type="radio" id="input" name="deadline" :value="inputDays" @change="modifyDeadline(false, inputDays)">
+                <label ref="radioInput" for="input">Giorni
+                  <input @change="modifyDeadline(false, inputDays, 'radioInput')" type="number" v-model="inputDays">
+                </label>
+              </div>
+              <div class="single-radio calendar-radio">
+                <input type="radio" id="calendar" name="deadline" :value="calendarDate" @change="modifyDeadline(true)">
+                <label ref="radioCalendar" for="calendar">Data
+                  <input @change="modifyDeadline(true, null, 'radioCalendar')" type="date" v-model="calendarDate">
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="action d-flex">
+            <button @click="panelDeadline = false" class="btn btn-primary">
               Imposta
             </button>
           </div>
         </div>
+      </div>
+
 
 
       </div>
@@ -150,7 +193,7 @@ export default{
     return{
       user: {},
       food: Object,
-      openSetDeadline: false,
+      panelDeadline: false,
       // activeMode: "shoppingList",
       storages: [
         // "Lista della spesa",
@@ -198,6 +241,10 @@ export default{
     this.$refs.inputName.focus();
   },
   methods:{
+    openPanelDeadline(){
+      this.panelDeadline = true;
+      this.modifyDeadline(false, 7)
+    },
     checkAvailableSave(){
       if(this.food.name !== ""){
         this.availableSave = true;
@@ -229,6 +276,9 @@ export default{
     save(){
       let vue = this;
       if(this.food.name !== ""){
+        // non è possibile per ora modificare un cibo esistente
+        // tengo codice ma dev'essere rivisto nell'eventualitò in cui 
+        // verrò gestita la situazione
         if("id" in this.food){
           // alimento già esistente quindi faccio upsert
           let updateFood = this.food;
@@ -255,7 +305,7 @@ export default{
                   message: "L'alimento è stato salvato correttamente",
                   type: "success"
                 })
-                vue.availableSave = false;
+                // vue.availableSave = false;
               }
             })
             .catch((error)=>{
@@ -266,6 +316,9 @@ export default{
           // alimento nuovo quindi faccio insert
           let newFood = this.food;
           newFood.user_id = this.user.id;
+          if(!newFood.shoppingList && this.deadlineValue instanceof Date){
+            newFood.deadline = this.deadlineValue;
+          }
           if(!newFood.shoppingList && !("deadline" in newFood)){
             this.$emit('saved', {
               message: "Inserire data di scadenza",
@@ -278,11 +331,6 @@ export default{
             delete newFood.storage;
           }
 
-          // inserire deadline solo se è stata impostata
-          // questo controllo non funziona
-          if(this.deadlineValue !== {}){
-            newFood.deadline = this.deadlineValue;
-          }
           supabase
             .from("food")
             .insert(newFood)
@@ -305,7 +353,7 @@ export default{
                   description: ""
                 }
                 vue.$refs.inputName.focus();
-                vue.availableSave = false;
+                // vue.availableSave = false;
               }
             })
             .catch((err)=>{
@@ -316,6 +364,11 @@ export default{
               })
             })
         }
+      } else{
+        this.$emit('saved', {
+          message: "Inserire nome alimento",
+          type: "error"
+        })
       }
     }
 
@@ -325,124 +378,139 @@ export default{
 </script>
 
 <style lang="scss">
-  .food-appbar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: var(--background-primary);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 12px;
-    z-index: 5;
-    button{
-      height: 40px;
-      width: 40%;
-    }
-  }
-  .mode{
-    justify-content: space-between;
-    button{
-      width: 44%;
-      height: 40px;
-      &.active{
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-        background-color: var(--background-primary);
-      }
-    }  
-  }
-  .food-input{
-    &>div{
-      margin: 8px 0;
-    }
-    input[type=radio]{
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-    .name-quantity{
+  .food{
+    @import "src/assets/partials/panel.scss";
+
+    .food-appbar{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: var(--background-primary);
+      display: flex;
       justify-content: space-between;
-      .name{
-        flex-grow: 1;
-        input{
+      align-items: center;
+      padding: 0 12px;
+      z-index: 5;
+      svg{
+        height: 35px;
+      }
+      button{
+        height: 40px;
+        width: 40%;
+      }
+    }
+    .mode{
+      justify-content: space-between;
+      button{
+        width: 44%;
+        height: 40px;
+        &.active{
+          color: var(--primary-color);
+          border-color: var(--primary-color);
+          background-color: var(--background-primary);
+        }
+        &.disable{
+          color: var(--disable-color);
+          border-color: var(--disable-color);
+        }
+      }  
+    }
+    .food-input{
+      &>div{
+        margin: 8px 0;
+      }
+      input[type=radio]{
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+      .name-quantity{
+        justify-content: space-between;
+        .name{
+          flex-grow: 1;
+          input{
+            width: 100%;
+          }
+        }
+        .quantity{
+          display: flex;
+          align-items: center;
+          label{
+            margin: 0 5px 0 15px;
+          }
+          input{
+            width: 30px;
+          }
+        }
+
+      }
+      .storage{
+        select{
           width: 100%;
         }
       }
-      .quantity{
-        display: flex;
-        align-items: center;
-        label{
-          margin: 0 5px 0 15px;
-        }
-        input{
-          width: 30px;
+      .category{
+        select{
+          width: 100%;
         }
       }
-
-    }
-    .storage{
-      select{
+      .btn-deadline{
         width: 100%;
       }
-    }
-    .category{
-      select{
-        width: 100%;
-      }
-    }
-    .deadline{
-      h5{
-        margin-bottom: 10px;
-      }
-      .single-radio{
-        position: relative;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        label{
-          input{
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 140px;
+      .deadline{
+        h5{
+          margin-bottom: 10px;
+        }
+        .single-radio{
+          position: relative;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          label{
+            input{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              transform: translateY(-50%);
+              width: 140px;
+            }
           }
         }
-      }
-      .radio{
-        position: fixed;
-        top: 80px;
-        bottom: 60px;
-        left: 0;
-        right: 0;
-        padding: 20px;
-        background-color: var(--background);
-      }
-      .set{
-        flex-grow: 1;
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-end;
+        .radio{
+          position: fixed;
+          top: 80px;
+          bottom: 60px;
+          left: 0;
+          right: 0;
+          padding: 20px;
+          background-color: var(--background);
+        }
+        .set{
+          flex-grow: 1;
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-end;
 
+        }
+      }
+      .description{
+        textarea{
+          width: 100%;
+          min-height: 200px;
+          padding: 10px;
+          flex-grow: 1;
+        }
       }
     }
-    .description{
-      textarea{
-        width: 100%;
-        min-height: 200px;
-        padding: 10px;
-        flex-grow: 1;
+    .food-action{
+      display: flex;
+      justify-content: flex-end;
+      button{
+        width: 45%;
       }
     }
   }
-  .food-action{
-    display: flex;
-    justify-content: flex-end;
-    button{
-      width: 45%;
-    }
-  }
+
 </style>

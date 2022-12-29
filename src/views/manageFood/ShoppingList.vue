@@ -123,8 +123,8 @@
         :key="index"
       >
         <div class="content d-flex">
-          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
-          <label :for="el.name">{{ el.name }}</label>
+          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="index" type="checkbox">
+          <label :for="index">{{ el.name }}</label>
         </div>
         <div class="operation d-flex">
           <!-- <div class="edit">
@@ -394,106 +394,39 @@ export default {
           })
       })
     },
-
   }
 }
 </script>
 
 <style lang="scss">
-  .shopping-list-appbar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: var(--background-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    z-index: 4;
-    .back{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      svg{
-        height: 40px;
-      }
-    }
-    button{
-      margin-left: 20px;
-      height: 40px;
-      width: 115px;
-      font-size: 20px;
-    }
-  }
   .shopping-list{
-    .panel-delete-background, .panel-store-background{
+    @import "src/assets/partials/panel.scss";
+    .shopping-list-appbar{
       position: fixed;
       top: 0;
-      bottom: 0;
-      right: 0;
       left: 0;
-      padding: 12px;
-      padding-top: 20px;
+      width: 100%;
+      height: 60px;
+      background-color: var(--background-primary);
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      .blurred{
-        height: 100%;
-        position: absolute;
-        top: 0;
-        backdrop-filter: blur(0px);
-      }
-      &.show{
-        z-index: 4;
-        .blurred{
-          top: 0;
-          bottom: 0;
-          right: 0;
-          left: 0;
-          backdrop-filter: blur(5px);
-        }
-        .panel-delete, .panel-store{
-          width: 90%;
-          // height: 180px;
-          padding: 20px;
-          opacity: 1;
-        }
-        .panel-store{
-          height: 70%;
+      padding: 0 20px;
+      z-index: 4;
+      .back{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        svg{
+          height: 40px;
         }
       }
-      &.hide{
-        z-index: -1;
-        .blurred{
-          top: 50%;
-          bottom: 50%;
-          left: 50%;
-          right: 50%;
-          overflow: hidden;
-        }
-        .panel-delete, .panel-store{
-          width: 60%;
-          height: 70px;
-          opacity: 0;
-        }
-      }
-      .panel-delete{
-        position: absolute;
-        background-color: var(--background-component);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--border-color);
-        justify-content: space-between;
-        transition: all .2s;
-        overflow: hidden;
-        h4{
-          padding-bottom: 20px;
-        }
-        button{
-          height: 50px;
-        }
+      button{
+        margin-left: 20px;
+        height: 40px;
+        width: 115px;
+        font-size: 20px;
       }
     }
     .header{
@@ -552,109 +485,8 @@ export default {
         }
       }
     }
-    .panel-delete{
-      padding: 20px;
-      .action{
-        justify-content: space-between;
-        button{
-          width: 100%;
-        }
-      }
-    }
     .panel-store{
-        position: absolute;
-        background-color: var(--background-component);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--border-color);
-        width: 90%;
-        padding: 10px;
-        transition: all .2s;
-        overflow: hidden;
-        z-index: 1;
-      &.show{
-        top: 80px;
-        bottom: 60px;
-        right: 0;
-        left: 0;
-        padding: 12px;
-      }
-      &.hide{
-        top: 50%;
-        bottom: 50%;
-        left: 50%;
-        right: 50%;
-        overflow: hidden;
-      }
-      .panel-store-title{
-        justify-content: center;
-      }
-      h2{
-        padding-bottom: 3px;
-        border-bottom: 3px solid var(--color-3); 
-        font-weight: 700;
-      }
-      h4{
-        margin-bottom: 10px;
-      }
-      .close{
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        svg{
-          height: 30px;
-        }
-      }
-      .deadline{
-        margin: 8px 0;
-      }
-      .single-radio{
-        position: relative;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        label{
-          input{
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 170px;
-            &[type="number"]{
-              text-align: right;
-            }
-          }
-        }
-        input[type=radio]{
-          width: 20px;
-          height: 20px;
-          margin-right: 8px;
-        }
-      }
-      .storage{
-        div{
-          height: 50px;
-          display: flex;
-          margin-top: 8px;
-          align-items: center;
-        }
-        select{
-          width: 100%;
-        }
-      }
-
-      .action{
-        justify-content: space-between;
-        button{
-          // width: 150px;
-          width: 100%;
-          height: 50px;
-        }
-      }
+      height: 70%;
     }
   }
 </style>

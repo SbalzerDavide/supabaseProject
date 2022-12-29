@@ -23,9 +23,6 @@
       <div class="panel-delete d-flex flex-direction-column">
         <h4>Sei sicuro di voler eliminare la nota?</h4>
         <div class="action d-flex">
-          <button @click="panelDelete = false" class="btn">
-            Annulla
-          </button>
           <button @click="deleteNote(selectedIndex)" class="btn btn-primary">
             Conferma
           </button>
@@ -156,6 +153,7 @@ export default {
 
 <style lang="scss">
   .notes{
+    @import "src/assets/partials/panel.scss"; 
     .header{
       display: flex;
       justify-content: center;
@@ -200,71 +198,6 @@ export default {
           transform: scale(1.2);
           transition: all .3s;
         }
-      }
-    }
-  }
-  .panel-delete-background{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    padding: 12px;
-    padding-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .blurred{
-      height: 100%;
-      position: absolute;
-      top: 0;
-      backdrop-filter: blur(0px);
-    }
-    &.show{
-      z-index: 2;
-      .blurred{
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        backdrop-filter: blur(5px);
-      }
-      .panel-delete{
-        width: 90%;
-        height: 180px;
-        padding: 20px;
-        opacity: 1;
-      }
-    }
-    &.hide{
-      z-index: -1;
-      .blurred{
-        top: 50%;
-        bottom: 50%;
-        left: 50%;
-        right: 50%;
-        overflow: hidden;
-      }
-      .panel-delete{
-        width: 60%;
-        height: 100px;
-        opacity: 0;
-      }
-    }
-    .panel-delete{
-      position: absolute;
-      background-color: var(--background-component);
-      border-radius: var(--border-radius);
-      border: 1px solid var(--border-color);
-      justify-content: space-between;
-      transition: all .2s;
-      overflow: hidden;
-      .action{
-        justify-content: space-between;
-      }
-      button{
-        height: 50px;
-        width: 45%;
       }
     }
   }
