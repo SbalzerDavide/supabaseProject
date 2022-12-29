@@ -16,14 +16,8 @@
           Delete
           <font-awesome-icon icon="fa-solid fa-trash" />
         </button>
-
-        <!-- <button @click="multipleList" class="btn btn-primary">
-          List
-          <font-awesome-icon icon="fa-solid fa-box" />
-        </button> -->
       </div>
     </div>
-
     <div 
       class="panel-delete-background" 
       :class="panelDelete ? 'show' : 'hide'"
@@ -53,81 +47,86 @@
       </div>
 
     </div>
-
-    <div v-if="filterType == 1" class="header-old d-flex">
-        <h1>Storage list</h1>
-        <select @change="applyFilter" name="storage" v-model="storageFilter">
-          <option 
+    <div v-if="editFood" class="edit-food">
+      <Food 
+        mode="read"
+        :propsFood="actualEl"
+        @saved="saveEditFood"
+      />     
+    </div>
+    <div v-else>
+      <div v-if="filterType == 1" class="header-old d-flex">
+          <h1>Storage list</h1>
+          <select @change="applyFilter" name="storage" v-model="storageFilter">
+            <option 
+              v-for="(storage, index) in storages" 
+              :key="index" 
+              :value="storage"
+            >
+              {{ storage }}
+            </option>
+          </select>
+      </div>
+      <div v-else-if="filterType == 2" class="header d-flex">
+        <div 
+          class="filter"
+          :class="isFiltered ? 'filtered' : ''"
+        >
+          <div 
+            class="cancel-filter box" 
+            :class="isFiltered ? 'show' : ''"
+            @click="cancelFilter"
+          >
+            <font-awesome-icon icon="fa-solid fa-x" />
+          </div>
+          <div class="box box-filter"
+            :class="index == activeFilter ? 'active' : ''"
             v-for="(storage, index) in storages" 
             :key="index" 
             :value="storage"
+            v-show="!isFiltered || (isFiltered && index != 0)"
+            @click="filterStorage(index)"
           >
             {{ storage }}
-          </option>
-        </select>
-    </div>
-    <div v-else-if="filterType == 2" class="header d-flex">
-      <div 
-        class="filter"
-        :class="isFiltered ? 'filtered' : ''"
-      >
-        <div 
-          class="cancel-filter box" 
-          :class="isFiltered ? 'show' : ''"
-          @click="cancelFilter"
-        >
-          <font-awesome-icon icon="fa-solid fa-x" />
-        </div>
-        <div class="box box-filter"
-          :class="index == activeFilter ? 'active' : ''"
-          v-for="(storage, index) in storages" 
-          :key="index" 
-          :value="storage"
-          v-show="!isFiltered || (isFiltered && index != 0)"
-          @click="filterStorage(index)"
-        >
-          {{ storage }}
+          </div>
         </div>
       </div>
+
+      <ul :class="selectedList.length > 0 ? 'anable-select' : ''">
+        <li
+          class="d-flex"
+          v-for="(el, index) in storageList" 
+          :key="index"
+        >
+          <div class="storage-food d-flex" :class="setDeadlineClass(el)">
+            <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
+            <label class="d-flex" :for="el.name">
+              <div class="missing-days">
+                {{ el.missingDays }}
+              </div>
+              <div class="list-name">
+                {{ el.name }}
+              </div>
+            </label>
+          </div>
+          <div class="operation d-flex">
+            <div @click="openEditFood(index)" class="edit">
+              <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+            </div>
+            <div @click="deleteEl(index)" class="delete">
+              <font-awesome-icon icon="fa-solid fa-trash" />      
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
 
-    <ul :class="selectedList.length > 0 ? 'anable-select' : ''">
-      <li
-        class="d-flex"
-        v-for="(el, index) in storageList" 
-        :key="index"
-      >
-        <div class="storage-food d-flex" :class="setDeadlineClass(el)">
-          <input v-model="el.selected" @change="changeCheckbox" :name="el.name" :index="index" :id="el.name" type="checkbox">
-          <label class="d-flex" :for="el.name">
-            <div class="missing-days">
-              {{ el.missingDays }}
-            </div>
-            <div class="list-name">
-              {{ el.name }}
-            </div>
-          </label>
-        </div>
-        <div class="operation d-flex">
-          <!-- <div class="edit">
-            <font-awesome-icon icon="fa-solid fa-pen" />
-          </div> -->
-          <div @click="deleteEl(index)" class="delete">
-            <font-awesome-icon icon="fa-solid fa-trash" />      
-          </div>
-          <!-- <div class="toShopping">
-              <font-awesome-icon icon="fa-solid fa-cart-shopping" />
-          </div> -->
-
-        </div>
-      </li>
-    </ul>
   </div>
 </template>
 
 <script>
 import { supabase } from '../../supabase';
-// import Food from "../../components/food/Food.vue";
+import Food from "src/components/food/Food.vue";
 import PopupMessage from "../../components/PopupMessage.vue";
 import loaderMixin from "../../mixins/loaderMixin.js";
 import setAppbarTitle from "../../mixins/setAppbarTitle.js"
@@ -139,6 +138,7 @@ export default {
   mixins: [loaderMixin, setAppbarTitle],
   components: {
     PopupMessage,
+    Food
   },
   props: {
   },
@@ -163,7 +163,8 @@ export default {
       filterType: 2,
       storageFilter: "All",
       isFiltered: false,
-      enableAddToShoppingList: false
+      enableAddToShoppingList: false,
+      editFood: false
     }
   },
   created(){
@@ -188,6 +189,10 @@ export default {
     })
   },
   methods:{
+    openEditFood(index){
+      this.editFood = true;
+      this.actualEl = this.storageList[index]
+    },
     deleteEl(index){
       index = parseInt(index);
       this.selectedList = [index.toString()];
@@ -403,6 +408,27 @@ export default {
           })
       })
     },
+    saveEditFood(e){
+      let vue = this;
+      this.getStorageList().then((data)=>{
+        this.changeLoader(false);
+        this.editFood = false;
+        this.triggerPopup = true;
+        this.popupMessage = e.message;
+        this.popupType = e.type;
+        vue.storageList = data;
+        vue.storageListOriginal = data;
+        let today = new Date();
+        vue.storageList.forEach(el=>{
+          let elDate = new Date(el.deadline);
+          el.selected = false;
+          var timeinmilisec = elDate.getTime() - today.getTime();
+          el.missingDays = Math.ceil(timeinmilisec / (1000 * 60 * 60 * 24));
+        })
+      })
+
+
+    },
     cancelPanel(){
       let vue = this;
       this.panelDelete = false;
@@ -466,6 +492,9 @@ export default {
       select{
         margin-left: 8px;
       }
+    }
+    .edit-food{
+      padding: 12px;
     }
     .header{
       overflow: auto;

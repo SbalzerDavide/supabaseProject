@@ -8,7 +8,7 @@
     </div>
 
     <div class="food-input d-flex flex-direction-column flex-grow">
-      <div class="mode d-flex">
+      <div v-show="mode === 'new'" class="mode d-flex">
         <button 
           class="btn"
           :class="food.shoppingList == true ? 'active' : 'disable'"
@@ -27,14 +27,15 @@
       <div class="name-quantity d-flex">
         <div class="name">
           <input 
-            v-if="edit"
+            v-show="edit"
             ref="inputName"
             type="text"
             v-model="food.name"
             placeholder="Alimento"
+            @focusout="focusoutName"
             @keyup.enter="save"
           >
-          <h3 v-else>{{ food.title }}</h3>
+          <span @click="editName" v-show="!edit">{{ food.name }}</span>
         </div>
         <div class="quantity">
           <label for="quantity">Qty</label>
@@ -194,6 +195,7 @@ export default{
       user: {},
       food: Object,
       panelDeadline: false,
+      edit: true,
       // activeMode: "shoppingList",
       storages: [
         // "Lista della spesa",
@@ -231,14 +233,19 @@ export default{
         category: "",
         description: ""
       }
-    } else if(this.type === "read"){
+    } else if(this.mode === "read"){
+      this.edit = false;
       this.food = this.propsFood;
+      let date = new Date(this.food.deadline);
+      this.deadlineValue = date;
+      this.deadlineValueFormat = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+
     }
     this.deadlineValue =  new Date();
     
   },
   mounted(){
-    this.$refs.inputName.focus();
+    this.$refs.inputName?.focus();
   },
   methods:{
     openPanelDeadline(){
@@ -281,7 +288,14 @@ export default{
         // verrò gestita la situazione
         if("id" in this.food){
           // alimento già esistente quindi faccio upsert
-          let updateFood = this.food;
+          let updateFood = {
+            user_id: this.user.id,
+            name: this.food.name,
+            quantity: this.food.quantity,
+            deadline: this.deadlineValue,
+            description: this.food.description
+          };
+
 
           if(!("deadline" in updateFood)){
             this.$emit('saved', {
@@ -294,11 +308,11 @@ export default{
           if(updateFood.shoppingList == true){
             delete updateFood.storage;
           }
-          updateFood.user_id = this.user.id;
           supabase
             .from("food")
             .update(updateFood)
             .eq('id', this.food.id)
+            .select()
             .then((data)=>{
               if("data" in data && data.data.length > 0){
                 this.$emit('saved', {
@@ -370,8 +384,18 @@ export default{
           type: "error"
         })
       }
+    },
+    editName(){
+      this.edit = true;
+      setTimeout(() => {
+        this.$refs.inputName.focus();
+      }, 5);
+    },
+    focusoutName(){
+      if(this.mode=="read"){
+        this.edit = false;
+      }
     }
-
 
   }
 }
@@ -430,6 +454,11 @@ export default{
         justify-content: space-between;
         .name{
           flex-grow: 1;
+          span{
+            display: flex;
+            align-items: center;
+            height: 100%;
+          }
           input{
             width: 100%;
           }
