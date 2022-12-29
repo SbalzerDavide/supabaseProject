@@ -470,6 +470,8 @@ export default {
     .header{
       overflow: auto;
       position: absolute;
+      left: 0;
+      right: 0;
       background-color: var(--background);
       z-index: 1;
       .filter{
