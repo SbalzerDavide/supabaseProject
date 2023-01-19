@@ -12,6 +12,10 @@
         <font-awesome-icon icon="fa-solid fa-arrow-left" />
       </div>
       <div class="action">
+        <button v-if="selectedList.length === 1" @click="openEditFood(selectedList[0])" class="btn btn-primary">
+          Edit
+          <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+        </button>
         <button @click="multipleStore" class="btn btn-primary">
           Delete
           <font-awesome-icon icon="fa-solid fa-trash" />
@@ -51,6 +55,7 @@
       <Food 
         mode="read"
         :propsFood="actualEl"
+        @closePanel="editFood = false"
         @saved="saveEditFood"
       />     
     </div>
@@ -169,10 +174,12 @@ export default {
   },
   created(){
     this.setAppbarTitle("Storage List");
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
+    // sistemare gestendo local storage al posto di localStorage ma diventerebbe meno sicuro. Trovare altro metodo
+    // alert(JSON.stringify(this.user));
     let vue = this;
     this.changeLoader(true);
     this.getStorageList().then((data)=>{
@@ -190,6 +197,7 @@ export default {
   },
   methods:{
     openEditFood(index){
+      index = parseInt(index);
       this.editFood = true;
       this.actualEl = this.storageList[index]
     },
@@ -468,10 +476,18 @@ export default {
           height: 40px;
         }
       }
+      .action{
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
       button{
+        // display: flex;
+        // justify-content: space-between;
+        flex-grow: 1;
         margin-left: 20px;
         height: 40px;
-        width: 120px;
+        max-width: 120px;
         font-size: 20px;
       }
     }
@@ -494,7 +510,10 @@ export default {
       }
     }
     .edit-food{
+      display: flex;
+      flex-direction: column;
       padding: 12px;
+      flex-grow: 1;
     }
     .header{
       overflow: auto;

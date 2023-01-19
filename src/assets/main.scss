@@ -30,7 +30,9 @@ button.btn{
 textarea{
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
-  background-color: var(--background-component);
+  // background-color: var(--background-component);
+  background-color: var(--background-hover);
+  border-radius: var(--border-radius);
   resize: none;
 }
 

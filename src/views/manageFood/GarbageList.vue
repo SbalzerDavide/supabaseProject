@@ -92,7 +92,7 @@ export default {
     this.setAppbarTitle("Garbage List");
     this.today = new Date();
 
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }

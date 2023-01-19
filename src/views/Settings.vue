@@ -12,27 +12,32 @@
         </div>
       </div>
     </div>
+
+    <div v-if="!subroute">      
     <div class="theme">
       <ThemeSwitch />
     </div>
-
       <AccountMoreInfo v-if="showMoreInfo" @closeMoreInfo="closeMoreInfo"/>
-    <ul>
-      <li>
-        <div class="setting-title">Condividi Food</div>
-        <div class="setting-action"></div>
-      </li>
-      <li>
-        <div class="setting-title">Gestisci applicazioni</div>
-        <div class="setting-action"></div>
-      </li>
-      <li @click="logout">
-        <div class="setting-title">Logout</div>
-        <div class="setting-action">
-          <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
-        </div>
-      </li>
-    </ul>
+      <ul>
+        <li @click="goTo('share')">
+          <div class="setting-title">Condividi lista della spesa</div>
+          <div class="setting-action"></div>
+        </li>
+        <li>
+          <div class="setting-title">Gestisci applicazioni</div>
+          <div class="setting-action"></div>
+        </li>
+        <li @click="logout">
+          <div class="setting-title">Logout</div>
+          <div class="setting-action">
+            <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -54,11 +59,21 @@ export default {
   data(){
     return{
       showMoreInfo: false,
+      subroute: false,
     }
   },
-  mounted(){
+  updated(){
+    if(window.location.href.endsWith("settings")){
+      this.subroute = false;
+    } else{
+      this.subroute = true;
+    }
   },
   methods:{
+    goTo(path){
+      this.subroute = true;
+      this.$router.push(`settings/${path}`)
+    },
     goBack(){
       this.$router.go(-1)
     },
@@ -101,6 +116,7 @@ export default {
       background-color: var(--background-hover);
       padding: 10px;
       border-radius: var(--border-radius);
+      cursor: pointer;
     }
     .app-bar{
       position: fixed;

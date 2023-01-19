@@ -1,7 +1,7 @@
 <template>
   <div class="food d-flex flex-direction-column flex-grow">
     <div v-show="availableSave" class="food-appbar">
-      <font-awesome-icon @click="$router.go(-1)" icon="fa-solid fa-arrow-left" />
+      <font-awesome-icon @click="appbarGoBack" icon="fa-solid fa-arrow-left" />
       <button @click="save" class="btn btn-primary">
         Save
       </button>
@@ -218,7 +218,7 @@ export default{
     }
   },
   created(){
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
@@ -248,6 +248,13 @@ export default{
     this.$refs.inputName?.focus();
   },
   methods:{
+    appbarGoBack(){
+      if(window.location.href.includes("storagelist")){
+        this.$emit("closePanel", true)
+      } else{
+        this.$router.go(-1)
+      }
+    },
     openPanelDeadline(){
       this.panelDeadline = true;
       this.modifyDeadline(false, 7)
@@ -403,8 +410,8 @@ export default{
 
 <style lang="scss">
   .food{
+    flex-grow: 1;
     @import "src/assets/partials/panel.scss";
-
     .food-appbar{
       position: fixed;
       top: 0;
@@ -442,8 +449,9 @@ export default{
       }  
     }
     .food-input{
-      &>div{
-        margin: 8px 0;
+      flex-grow: 1;
+      &>div:not(:last-child){
+        margin-bottom: 16px;
       }
       input[type=radio]{
         width: 20px;
@@ -458,6 +466,7 @@ export default{
             display: flex;
             align-items: center;
             height: 100%;
+            border-bottom: 2px solid var(--primary-color);
           }
           input{
             width: 100%;

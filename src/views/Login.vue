@@ -196,7 +196,7 @@ export default {
   .login{
     // display: flex;
     justify-content: center;
-    padding-top: 50vh;
+    padding-top: 30vh;
     .login-container{
       // display: flex;
       // flex-direction: column;

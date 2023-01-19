@@ -48,7 +48,7 @@ export default {
     }
   },
   created(){
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
@@ -72,7 +72,7 @@ export default {
           // aggiorno il valore di userData
           vue.user.username = vue.username;
           vue.user.website = vue.website;
-          window.sessionStorage.setItem("userData", JSON.stringify(vue.user));
+          window.localStorage.setItem("userData", JSON.stringify(vue.user));
         })
         .catch((error)=>{
           console.log(error);

@@ -69,7 +69,7 @@ export default {
               userData.id = vue.session.user.id;
               userData.email = vue.session.user.email;
   
-              window.sessionStorage.setItem("userData", JSON.stringify(userData));
+              window.localStorage.setItem("userData", JSON.stringify(userData));
             })
         } catch (error) {
           alert(error.message)
@@ -95,7 +95,7 @@ export default {
     .work-area{
       margin: 60px auto 0 auto;
       max-width: 1200px;
-      height: calc((var(--vh, 1vh) * 100) - 80px);
+      height: calc((var(--vh, 1vh) * 100) - 60px);
       // display: flex;
       // flex-direction: column;
       overflow: auto;

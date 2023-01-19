@@ -15,9 +15,15 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: 'settings',
+    path: '/settings',
     name: 'Settings',
     component: () => import('../views/Settings.vue'),
+    children:[
+      {
+        path: 'share',
+        component: () => import('../views/settings/Share.vue'),
+      }
+    ]
   },
   {
     path: '/home',
