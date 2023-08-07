@@ -1,9 +1,9 @@
 <template>
   <div class="garbage-list d-flex flex-direction-column flex-grow">
     <div class="header d-flex">
-      <div class="d-flex">
+      <!-- <div class="d-flex">
         <h1>Garbage list</h1>
-      </div>
+      </div> -->
     </div>
     <div class="filter d-flex">
       <div class="active-filter unselectable">
@@ -61,11 +61,13 @@
 
 <script>
 import { supabase } from '../../supabase';
-import loaderMixin from "../../mixins/loaderMixin.js"
+import loaderMixin from "../../mixins/loaderMixin.js";
+import setAppbarTitle from "../../mixins/setAppbarTitle.js"
+
 
 export default {
   name: 'ShoppingList',
-  mixins: [loaderMixin],
+  mixins: [loaderMixin, setAppbarTitle],
   components: {
   },
   props: {
@@ -87,9 +89,10 @@ export default {
     }
   },
   created(){
+    this.setAppbarTitle("Garbage List");
     this.today = new Date();
 
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
@@ -231,6 +234,9 @@ export default {
       justify-content: space-between;
       align-items: center;
       padding: 12px;
+      &:first-child{
+        padding-top: 0;
+      }
       div{
         align-items: center;
       }
@@ -242,56 +248,57 @@ export default {
         margin-right: 8px;
         width: 30px;
         height: 30px;
-        border-radius: 50%;
+        border-radius: 10px;
         background-color: var(--color-3);
         color: black;
         // color: var(--contrast-primary);
       }
     }
-  }
-  .filter{
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 12px;
-    position: relative;
-    .active-filter{
-      display: flex;
+    .filter{
       justify-content: space-between;
-      width: 140px;
-      span{
-        flex-grow: 1;
-        text-align: center;
-        // width: 80px;
-      }
-    }
-    .background-options{
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 8;
-    }
-    .selected{
-      padding: 3px 8px;
-      width: 150px;
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      border: 1px solid var(--border-color-light);
-      border-radius: var(--border-radius);
-    }
-    .options{
-      position: absolute;
-      background-color: var(--background-component);
-      border: 1px solid var(--border-color-light);
-      border-radius: var(--border-radius);
-      top: 120%;
-      right: 10px;
-      width: 180px;
-      z-index: 9;
-      .option{
-        padding: 5px 10px;
+      padding: 0 12px;
+      position: relative;
+      margin: 10px 0;
+      .active-filter{
+        display: flex;
+        justify-content: space-between;
+        width: 140px;
+        span{
+          flex-grow: 1;
+          text-align: center;
+          // width: 80px;
+        }
+      }
+      .background-options{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 8;
+      }
+      .selected{
+        padding: 3px 8px;
+        width: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius);
+      }
+      .options{
+        position: absolute;
+        background-color: var(--background-component);
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius);
+        top: 120%;
+        right: 10px;
+        width: 180px;
+        z-index: 9;
+        .option{
+          padding: 5px 10px;
+        }
       }
     }
   }

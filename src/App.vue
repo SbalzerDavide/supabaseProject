@@ -20,7 +20,8 @@
 
 <script>
 import { supabase } from "./supabase.js";
-import PopupMessage from "./components/PopupMessage.vue"
+// import PopupMessage from "./components/PopupMessage.vue";
+import PopupMessage from 'src/components/PopupMessage.vue';
 
 
 export default {

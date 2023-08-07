@@ -64,7 +64,7 @@ export default {
     }
   },
   created(){
-    let stringUserData = window.sessionStorage.getItem("userData");
+    let stringUserData = window.localStorage.getItem("userData");
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
@@ -78,7 +78,6 @@ export default {
 
   },
   updated(){
-    console.log("updated");
     let path = window.location.href;
     this.activePanel = path.split("/")[path.split("/").length - 1];
   },  
@@ -104,7 +103,9 @@ export default {
       width: 100%;
       height: 60px;
       padding: 0 12px;
-      background-color: var(--background-primary);
+      // background-color: var(--background-primary);
+      background-color: var(--background-hover);
+      border-top: 1px solid var(--border-color-light);
       align-self: flex-end;
       justify-content: space-between;
       .app-navigazione-element{
@@ -113,8 +114,9 @@ export default {
         color: var(--opacity-text);
         cursor: pointer;
         transition: all .2s;
-        &.active{
-          color: var(--text-color);
+        &.active *{
+          // color: var(--text-color);
+          color: var(--primary-color);
           transform: scale(1.1);
         }
         svg{

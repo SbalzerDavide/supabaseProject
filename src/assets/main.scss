@@ -30,7 +30,9 @@ button.btn{
 textarea{
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
-  background-color: var(--background-component);
+  // background-color: var(--background-component);
+  background-color: var(--background-hover);
+  border-radius: var(--border-radius);
   resize: none;
 }
 
@@ -64,7 +66,7 @@ input:not([type="checkbox"]){
   border: 1px solid #444;
 }
 
-input[type="checkbox"]{
+input[type="checkbox"], input[type="radio"]{
   accent-color: var(--color-3);
 }
 
@@ -121,6 +123,5 @@ input[type=number] {
     font-size: 18px;
   }
 }
-
 
 

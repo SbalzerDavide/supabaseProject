@@ -13,7 +13,7 @@ body{
   --primary-color: #DC136C;
 
   --background-hover: #eee;
-  --background-component: #eee;
+  --background-component: #e3e0e8;
   --background-primary: #58A4B0;
   --contrast-primary: #fff;
 
@@ -25,6 +25,30 @@ body{
   --color-5: #FFF689;
 }
 
+.theme-light{
+  --background: #fff;  
+  --opacity-layer: rgba(0,0,0, .1);
+
+  // color
+  --opacity-text: rgba(0,0,0, .5);
+  --text-color: #222;
+  --disable-color: #999;
+  --primary-color: #296EB4;
+
+  --background-hover: #eee;
+  // --background-component: #e3e0e8;
+  --background-component: #fff7e9;
+  --background-primary: #FDB833;
+  --contrast-primary: #fff;
+
+  --border-color: #000;
+  --border-color-light: #555;
+  
+  --color-3: #86BBBD;
+  --color-4: #FFF689;
+  --color-5: #D44D5C;
+}
+
 .theme-dark{
   --background: #222;  
   --opacity-layer: rgba(255, 255, 255, .1);
@@ -33,6 +57,8 @@ body{
   --primary-color: #fff;
   --opacity-text: rgba(255, 255, 255, .5);
   --text-color: #fff;
+  --disable-color: #999;
+
   --primary-color: #DC136C;
 
   --background-component: #333;
@@ -45,6 +71,35 @@ body{
   --color-3: #F1B5CB;
   --color-4: #495867;
   --color-5: #FFF689;
+
+  *{
+    color: #ddd;
+  }
+
+}
+.theme-dark{
+  --background: #222;  
+  --opacity-layer: rgba(255, 255, 255, .1);
+
+  // color
+  --primary-color: #fff;
+  --opacity-text: rgba(255, 255, 255, .5);
+  --text-color: #fff;
+  --disable-color: #999;
+
+  --primary-color: #296EB4;
+
+
+  --background-component: #333;
+  --background-primary: #333;
+  --background-hover: #333;
+
+  --border-color: #fff;
+  --border-color-light: #555;
+
+  --color-3: #86BBBD;
+  --color-4: #FFF689;
+  --color-5: #D44D5C;
 
   *{
     color: #ddd;
