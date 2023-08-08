@@ -49,24 +49,28 @@ export default {
   },
   mounted(){
     let vue = this;
-    supabase.auth.getSession()
-      .then(({ data }) => {
-        vue.session = data.session;
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-      .finally(()=>{
-        if(vue.session != null){
-          vue.$router.push({ name: 'Home', params: {
-            session: vue.session
-          } })
-        } else{
-          // la soluzione è veramente quella di non mostrare l'errore?
-          // vue.$router.push({ name: 'Login', params: {} }).catch(() => {});
-          vue.$router.push({ name: 'Login', params: {} })
-        }
-      })
+    if(window.foodManagerDemo === true){
+      vue.$router.push({ name: 'Home'})
+    } else{
+      supabase.auth.getSession()
+        .then(({ data }) => {
+          vue.session = data.session;
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+        .finally(()=>{
+          if(vue.session != null){
+            vue.$router.push({ name: 'Home', params: {
+              session: vue.session
+            } })
+          } else{
+            // la soluzione è veramente quella di non mostrare l'errore?
+            // vue.$router.push({ name: 'Login', params: {} }).catch(() => {});
+            vue.$router.push({ name: 'Login', params: {} })
+          }
+        })
+    }
   },
   destroyed(){
     window.removeEventListener("changeLoader",this.changeLoader);

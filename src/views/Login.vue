@@ -2,8 +2,9 @@
   <div class="login d-flex">
     <ThemeSwitch />
     <div class="login-container d-flex-flex-direction-column">
-      <h1>login</h1>
+      <!-- <h1>login</h1> -->
       <div v-if="type==='login'" class="login-box">
+        <h3>Login</h3>
         <div class="user">
           <label for="email"></label>
           <input 
@@ -37,7 +38,7 @@
         </div>
       </div>
       <div v-else-if="type==='signIn'" class="login-box">
-        <h3>signIn</h3>
+        <h3>Sign In</h3>
         <div class="user">
           <label for=""></label>
           <input 
@@ -67,8 +68,8 @@
           </div>
           <label for=""></label>
           <PopupMessage 
-            :content="errorPassword" 
-            position="anchored"
+            content="Inserire correttamente la conferma" 
+            position="bottom"
             type="error" 
             :show="showError" 
             @showBack="showError=false"
@@ -85,6 +86,9 @@
           <button class="btn" @click="handleSignIn">Sign in</button>
           <a @click="type='login'" href="#">login</a>
         </div>
+      </div>
+      <div class="demo">
+        <button class="btn btn-primary" @click="startDemo">Demo</button>
       </div>
     </div>
   </div>
@@ -114,7 +118,6 @@ export default {
       showSignInRePsw: false,
       loading: false,
       showError: false,
-      errorPassword: ""
     }
   },
   created(){
@@ -125,7 +128,6 @@ export default {
       if(this.passwordControl !== this.password){
         // mostrare in questo caso errore
         this.showError = true;
-        this.errorPassword = "Inserire correttamente la conferma";
         console.log("attenzione le due password non coincidono");
       }
     },
@@ -186,6 +188,10 @@ export default {
           console.log(err);
         })  
     },
+    startDemo(){
+      window.foodManagerDemo = true;
+      this.$router.push({ name: 'App'})
+    }
   }
 }
 </script>
@@ -209,7 +215,7 @@ export default {
         flex-direction: row-reverse;
         justify-content: space-between;
         a{
-          font-size: 13px;
+          font-size: 15px;
           align-self: flex-end;
           color: var(--text-color);
         }
@@ -252,5 +258,24 @@ export default {
       top: 25px;
       right: 40px;
     }
+    .demo{
+      margin-top: 20px;
+      button{
+        width: 100%;
+      }
+    }
   }
+
+  @media screen and (max-width: 800px) {
+    .login {
+      padding-top: 0;
+      .login-container{
+        width: 100vw;
+        height: 100vh;
+        padding-top: 30vh;
+        border-radius: 0;
+      }
+    }
+  }
+
 </style>

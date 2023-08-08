@@ -48,6 +48,11 @@ export default {
   created(){
     },
   mounted(){
+    if(window.foodManagerDemo === true){
+      this.firstPage = false;
+      this.$router.push({ path: `/home/manageFood` });
+
+    }
     this.setAppbarTitle("Home");
     this.getProfiles();
     let vh = window.innerHeight * 0.01;
