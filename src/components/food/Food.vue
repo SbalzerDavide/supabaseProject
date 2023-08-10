@@ -218,9 +218,15 @@ export default{
     }
   },
   created(){
-    let stringUserData = window.localStorage.getItem("userData");
-    if(stringUserData != null){
-      this.user = JSON.parse(stringUserData);
+    if(window.foodManagerDemo === true){
+      this.user = {
+        id: 1
+      }
+    } else{
+      let stringUserData = window.localStorage.getItem("userData");
+      if(stringUserData != null){
+        this.user = JSON.parse(stringUserData);
+      }
     }
     if(this.mode === "new"){
       this.edit = true;
@@ -241,7 +247,7 @@ export default{
       this.deadlineValueFormat = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
 
     }
-    this.deadlineValue =  new Date();
+    // this.deadlineValue =  new Date();
     
   },
   mounted(){
@@ -299,6 +305,7 @@ export default{
             user_id: this.user.id,
             name: this.food.name,
             quantity: this.food.quantity,
+            storage: this.food.storage,
             deadline: this.deadlineValue,
             description: this.food.description
           };
@@ -315,24 +322,53 @@ export default{
           if(updateFood.shoppingList == true){
             delete updateFood.storage;
           }
-          supabase
-            .from("food")
-            .update(updateFood)
-            .eq('id', this.food.id)
-            .select()
-            .then((data)=>{
-              if("data" in data && data.data.length > 0){
-                this.$emit('saved', {
-                  message: "L'alimento è stato salvato correttamente",
-                  type: "success"
-                })
-                // vue.availableSave = false;
+          if(window.foodManagerDemo === true){
+            // da provare
+            // arrivo qui da edit in una lista
+            let listName = "";
+            if(updateFood.shoppingList){
+              listName = "shoppingList"
+            } else{
+              listName = "storage"
+            }
+            updateFood.id = this.food.id;
+            // updateFood.storage = this.food.storage; 
+            let list = localStorage.getItem(listName);
+            if(list){
+              list = JSON.parse(list);              
+            } else{
+              list = []
+            }
+            // sostituzione elemento in list
+            list.forEach((el, index, array) => {
+              if(el.id == updateFood.id){
+                array[index] = updateFood
               }
+            });
+            localStorage.setItem(listName, JSON.stringify(list));
+            this.$emit('saved', {
+              message: "L'alimento è stato salvato correttamente",
+              type: "success"
             })
-            .catch((error)=>{
-              console.log(error);
-            })
-
+          } else{
+            supabase
+              .from("food")
+              .update(updateFood)
+              .eq('id', this.food.id)
+              .select()
+              .then((data)=>{
+                if("data" in data && data.data.length > 0){
+                  this.$emit('saved', {
+                    message: "L'alimento è stato salvato correttamente",
+                    type: "success"
+                  })
+                  // vue.availableSave = false;
+                }
+              })
+              .catch((error)=>{
+                console.log(error);
+              })
+          }
         } else{
           // alimento nuovo quindi faccio insert
           let newFood = this.food;
@@ -351,39 +387,72 @@ export default{
           if(newFood.shoppingList == true){
             delete newFood.storage;
           }
-
-          supabase
-            .from("food")
-            .insert(newFood)
-            .select()
-            .then((data)=>{
-              if("data" in data && data.data.length > 0){
-                vue.food.id = data.data[0].id;
-                this.$emit('saved', {
-                  message: "L'alimento è stato salvato correttamente",
-                  type: "success"
-                })
-                // azzero dati  di inserimento per poter aggiungere un altro alimento
-                // vue.food.name = "";
-                vue.food = {
-                  name: "",
-                  storage: "Frigorifero",
-                  shoppingList: true,
-                  quantity: 1,
-                  category: "",
-                  description: ""
+          if(window.foodManagerDemo === true){
+            let listName = "";
+            if(newFood.shoppingList){
+              listName = "shoppingList"
+            } else{
+              listName = "storage"
+            }
+            let list = localStorage.getItem(listName);
+            if(list){
+              list = JSON.parse(list);              
+            } else{
+              list = []
+            }
+            newFood.id = Math.random().toString(16).slice(2)
+            list.push(newFood);
+            localStorage.setItem(listName, JSON.stringify(list));
+            vue.food.id = newFood.id;
+            this.$emit('saved', {
+              message: "L'alimento è stato salvato correttamente",
+              type: "success"
+            })
+            // azzero dati  di inserimento per poter aggiungere un altro alimento
+            // vue.food.name = "";
+            vue.food = {
+              name: "",
+              storage: "Frigorifero",
+              shoppingList: true,
+              quantity: 1,
+              category: "",
+              description: ""
+            }
+            vue.$refs.inputName.focus();
+          } else{
+            supabase
+              .from("food")
+              .insert(newFood)
+              .select()
+              .then((data)=>{
+                if("data" in data && data.data.length > 0){
+                  vue.food.id = data.data[0].id;
+                  this.$emit('saved', {
+                    message: "L'alimento è stato salvato correttamente",
+                    type: "success"
+                  })
+                  // azzero dati  di inserimento per poter aggiungere un altro alimento
+                  // vue.food.name = "";
+                  vue.food = {
+                    name: "",
+                    storage: "Frigorifero",
+                    shoppingList: true,
+                    quantity: 1,
+                    category: "",
+                    description: ""
+                  }
+                  vue.$refs.inputName.focus();
+                  // vue.availableSave = false;
                 }
-                vue.$refs.inputName.focus();
-                // vue.availableSave = false;
-              }
-            })
-            .catch((err)=>{
-              console.log(err);
-              this.$emit('saved', {
-                message: "Attenzione! Errore salvataggio alimento",
-                type: "error"
               })
-            })
+              .catch((err)=>{
+                console.log(err);
+                this.$emit('saved', {
+                  message: "Attenzione! Errore salvataggio alimento",
+                  type: "error"
+                })
+              })
+          }
         }
       } else{
         this.$emit('saved', {

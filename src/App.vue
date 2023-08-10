@@ -67,7 +67,7 @@ export default {
           } else{
             // la soluzione è veramente quella di non mostrare l'errore?
             // vue.$router.push({ name: 'Login', params: {} }).catch(() => {});
-            vue.$router.push({ name: 'Login', params: {} })
+            vue.$router.push({ name: 'Login', params: {} }).catch(() => {})
           }
         })
     }

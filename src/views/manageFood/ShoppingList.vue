@@ -223,18 +223,30 @@ export default {
       tempShoppingList.forEach((el, index)=>{
         if(this.selectedList.includes(index.toString())){
           const p = new Promise((resolve, reject) => {
-            supabase
-              .from('food')
-              .delete()
-              .eq('id', this.shoppingList[index].id)
-              .then((data)=>{
-                console.log(data);
+            if(window.foodManagerDemo === true){
+              let shoppingList = localStorage.getItem("shoppingList");
+              if(shoppingList){
+                shoppingList = JSON.parse(shoppingList);
+                shoppingList.splice(index, 1)
+                localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+                this.shoppingList = shoppingList
                 resolve()
-              })
-              .catch((err)=>{
-                console.log(err);
-                reject()
-              })
+              }
+            } else{
+              supabase
+                .from('food')
+                .delete()
+                .eq('id', this.shoppingList[index].id)
+                .then((data)=>{
+                  console.log(data);
+                  resolve()
+                })
+                .catch((err)=>{
+                  console.log(err);
+                  reject()
+                })
+            }
+
           })
           promises.push(p);
         }
@@ -311,33 +323,53 @@ export default {
         shoppingList: false,
       }
       let saved = false;
-      supabase
-        .from("food")
-        .update(newStore)
-        .eq('id', this.actualEl.id)
-        .select()
-        .then((data)=>{
-          if("data" in data && data.data.length > 0){
-            saved = true;
-            vue.selectedList.splice(0, 1);
+      if(window.foodManagerDemo === true){
+        let storage = localStorage.getItem("storage");
+        if(storage){
+          storage = JSON.parse(storage);
+          let toStore = this.actualEl;
+          toStore.deadline= this.deadlineValue
+          toStore.getShoppingList = false
+          storage.push(toStore);
+          localStorage.setItem("storage", JSON.stringify(storage))
+          vue.selectedList.splice(0, 1);  
+          // messaggi popup per avvenuto salavatggio
+          vue.popupMessage = `Alimento correttamente spostato in ${toStore.storage}`;
+          vue.popupType = "success";
+          vue.triggerPopup = true;
 
-            // messaggi popup per avvenuto salavatggio
-            vue.popupMessage = `Alimento correttamente spostato in ${data.data[0].storage}`;
-            vue.popupType = "success";
-            vue.triggerPopup = true;
-      
-            vue.managePanel();
-          }
-        })
-        .catch((error)=>{
-          // sono sicuro che non sia stato salvato se passa dalla catch e saved è rimasto === false
-          if(!saved){
-            console.log(error);
-            vue.popupMessage = `Attenzione, errore nello spostemento`;
-            vue.popupType = "error";
-            vue.triggerPopup = true;
-          }
-        })
+          vue.managePanel();
+
+        }
+      } else{
+        supabase
+          .from("food")
+          .update(newStore)
+          .eq('id', this.actualEl.id)
+          .select()
+          .then((data)=>{
+            if("data" in data && data.data.length > 0){
+              saved = true;
+              vue.selectedList.splice(0, 1);
+  
+              // messaggi popup per avvenuto salavatggio
+              vue.popupMessage = `Alimento correttamente spostato in ${data.data[0].storage}`;
+              vue.popupType = "success";
+              vue.triggerPopup = true;
+        
+              vue.managePanel();
+            }
+          })
+          .catch((error)=>{
+            // sono sicuro che non sia stato salvato se passa dalla catch e saved è rimasto === false
+            if(!saved){
+              console.log(error);
+              vue.popupMessage = `Attenzione, errore nello spostemento`;
+              vue.popupType = "error";
+              vue.triggerPopup = true;
+            }
+          })
+      }
     },
     cancelDelete(){
       this.panelDelete = false;
@@ -381,6 +413,14 @@ export default {
     getShoppingList(){
       return new Promise((resolve, reject)=>{
         let vue = this;
+        if(window.foodManagerDemo === true){
+          let shoppingList = localStorage.getItem("shoppingList");
+          if(shoppingList){
+            resolve(JSON.parse(shoppingList));
+          } else{
+            resolve([])
+          }
+        } else{
         supabase
           .from("food")
           .select()
@@ -392,6 +432,7 @@ export default {
           .catch((err)=>{
             reject(err);
           })
+        }
       })
     },
   }

@@ -178,8 +178,6 @@ export default {
     if(stringUserData != null){
       this.user = JSON.parse(stringUserData);
     }
-    // sistemare gestendo local storage al posto di localStorage ma diventerebbe meno sicuro. Trovare altro metodo
-    // alert(JSON.stringify(this.user));
     let vue = this;
     this.changeLoader(true);
     this.getStorageList().then((data)=>{
@@ -295,20 +293,29 @@ export default {
     },
     getStorageList(){
       return new Promise((resolve, reject)=>{
-        let vue = this;
-        supabase
-          .from("food")
-          .select()
-          .eq('user_id', vue.user.id)
-          .eq('shoppingList', false)
-          .neq('garbage', true)
-          .order("deadline")
-          .then((data)=>{
-            resolve(data.data);
-          })
-          .catch((err)=>{
-            reject(err);
-          })
+        if(window.foodManagerDemo === true){
+          let storage = localStorage.getItem("storage");
+          if(storage){
+            resolve(JSON.parse(storage));
+          } else{
+            resolve([])
+          }
+        } else{
+          let vue = this;
+          supabase
+            .from("food")
+            .select()
+            .eq('user_id', vue.user.id)
+            .eq('shoppingList', false)
+            .neq('garbage', true)
+            .order("deadline")
+            .then((data)=>{
+              resolve(data.data);
+            })
+            .catch((err)=>{
+              reject(err);
+            })
+        }
       })
     },
     setDeadlineClass(food){
@@ -326,53 +333,33 @@ export default {
     },
     eatenFood(){
       let vue = this;
-      supabase
-        .from('food')
-        .delete()
-        .eq('id', this.actualEl.id)
-        .then(()=>{
-          // popup operazione andata a buon fine
-          vue.popupMessage = `${vue.actualEl.name} contrassegnato come mangiato!`
-          vue.popupType = "success";
-          vue.triggerPopup = true;
+      if(window.foodManagerDemo === true){
+        // popup operazione andata a buon fine
+        vue.popupMessage = `${vue.actualEl.name} contrassegnato come mangiato!`
+        vue.popupType = "success";
+        vue.triggerPopup = true;
 
-          if(vue.enableAddToShoppingList){
-            console.log("aggiungo anche a lista della spesa");
-            vue.toShoppingList().then(()=>{
-              vue.selectedList.splice(0, 1);
-              vue.managePanel();
-            })
-          } else{
+        if(vue.enableAddToShoppingList){
+          console.log("aggiungo anche a lista della spesa");
+          vue.toShoppingList().then(()=>{
             vue.selectedList.splice(0, 1);
             vue.managePanel();
-          }
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
-    },
-    toGarbage(){
-      let vue = this;
-      let garbageFood = {
-        deadline: this.actualEl.deadline,
-        id: this.actualEl.id,
-        name: this.actualEl.name,
-        garbage: true,
-        garbageDate: new Date()
-      }
-      let saved = false;
-      supabase
-        .from("food")
-        .update(garbageFood)
-        .eq('id', garbageFood.id)
-        .select()
-        .then((data)=>{
-          if("data" in data && data.data.length > 0){
-            saved = true;
+          })
+        } else{
+          vue.selectedList.splice(0, 1);
+          vue.managePanel();
+        }
+      } else{
+        supabase
+          .from('food')
+          .delete()
+          .eq('id', this.actualEl.id)
+          .then(()=>{
             // popup operazione andata a buon fine
-            vue.popupMessage = `${garbageFood.name} buttato!`
+            vue.popupMessage = `${vue.actualEl.name} contrassegnato come mangiato!`
             vue.popupType = "success";
             vue.triggerPopup = true;
+  
             if(vue.enableAddToShoppingList){
               console.log("aggiungo anche a lista della spesa");
               vue.toShoppingList().then(()=>{
@@ -383,16 +370,71 @@ export default {
               vue.selectedList.splice(0, 1);
               vue.managePanel();
             }
-          }
-        })
-        .catch((error)=>{
-          if(!saved){
-            console.log(error);
-            vue.popupMessage = `Attenzione, errore nello spostemento`;
-            vue.popupType = "error";
-            vue.triggerPopup = true;
-          }
-        })
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
+      }
+    },
+    toGarbage(){
+      let vue = this;
+      let garbageFood = {
+        deadline: this.actualEl.deadline,
+        id: this.actualEl.id,
+        name: this.actualEl.name,
+        garbage: true,
+        garbageDate: new Date()
+      }
+      if(window.foodManagerDemo === true){
+        // popup operazione andata a buon fine
+        vue.popupMessage = `${garbageFood.name} buttato!`
+        vue.popupType = "success";
+        vue.triggerPopup = true;
+        if(vue.enableAddToShoppingList){
+          console.log("aggiungo anche a lista della spesa");
+          vue.toShoppingList().then(()=>{
+            vue.selectedList.splice(0, 1);
+            vue.managePanel();
+          })
+        } else{
+          vue.selectedList.splice(0, 1);
+          vue.managePanel();
+        }
+      } else{
+        let saved = false;
+        supabase
+          .from("food")
+          .update(garbageFood)
+          .eq('id', garbageFood.id)
+          .select()
+          .then((data)=>{
+            if("data" in data && data.data.length > 0){
+              saved = true;
+              // popup operazione andata a buon fine
+              vue.popupMessage = `${garbageFood.name} buttato!`
+              vue.popupType = "success";
+              vue.triggerPopup = true;
+              if(vue.enableAddToShoppingList){
+                console.log("aggiungo anche a lista della spesa");
+                vue.toShoppingList().then(()=>{
+                  vue.selectedList.splice(0, 1);
+                  vue.managePanel();
+                })
+              } else{
+                vue.selectedList.splice(0, 1);
+                vue.managePanel();
+              }
+            }
+          })
+          .catch((error)=>{
+            if(!saved){
+              console.log(error);
+              vue.popupMessage = `Attenzione, errore nello spostemento`;
+              vue.popupType = "error";
+              vue.triggerPopup = true;
+            }
+          })
+      }
     },
     toShoppingList(){
       return new Promise((resolve, reject)=>{
@@ -403,17 +445,25 @@ export default {
           user_id: this.actualEl.user_id,
           category: this.actualEl.category
         }
-
-        supabase
-          .from("food")
-          .insert(toShopping)
-          .select()
-          .then((data)=>{
-            resolve(data.data);
-          })
-          .catch((err)=>{
-            reject(err);
-          })
+        if(window.foodManagerDemo === true){
+          let storage = localStorage.getItem("shoppingList");
+          if(storage){
+            storage = JSON.parse(storage);
+            storage.push(toShopping);
+            localStorage.setItem("shoppingList", storage);
+          } 
+        } else{
+          supabase
+            .from("food")
+            .insert(toShopping)
+            .select()
+            .then((data)=>{
+              resolve(data.data);
+            })
+            .catch((err)=>{
+              reject(err);
+            })
+        }  
       })
     },
     saveEditFood(e){
