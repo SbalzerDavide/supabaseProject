@@ -215,6 +215,7 @@ export default{
       deadlineValueFormat: "",
       inputDays: 0,
       availableSave: true,
+      isMobile: false,
     }
   },
   created(){
@@ -247,7 +248,9 @@ export default{
       this.deadlineValueFormat = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
 
     }
-    // this.deadlineValue =  new Date();
+    if(window.innerWidth <= 900){
+      this.isMobile = true;
+    }
     
   },
   mounted(){
@@ -418,7 +421,9 @@ export default{
               category: "",
               description: ""
             }
-            vue.$refs.inputName.focus();
+            if(!this.isMobile){
+              vue.$refs.inputName.focus();
+            }
           } else{
             supabase
               .from("food")
@@ -441,8 +446,9 @@ export default{
                     category: "",
                     description: ""
                   }
-                  vue.$refs.inputName.focus();
-                  // vue.availableSave = false;
+                  if(!this.isMobile){
+                    vue.$refs.inputName.focus();
+                  }
                 }
               })
               .catch((err)=>{
