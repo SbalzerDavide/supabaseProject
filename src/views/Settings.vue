@@ -14,11 +14,11 @@
     </div>
 
     <div v-if="!subroute">      
-    <div class="theme">
-      <ThemeSwitch />
-    </div>
+      <div class="theme">
+        <ThemeSwitch />
+      </div>
       <AccountMoreInfo v-if="showMoreInfo" @closeMoreInfo="closeMoreInfo"/>
-      <ul>
+      <ul v-if="!demo">
         <li @click="goTo('share')">
           <div class="setting-title">Condividi lista della spesa</div>
           <div class="setting-action"></div>
@@ -60,6 +60,12 @@ export default {
     return{
       showMoreInfo: false,
       subroute: false,
+      demo: false
+    }
+  },
+  created(){
+    if(window.foodManagerDemo){
+      this.demo = true;
     }
   },
   updated(){
