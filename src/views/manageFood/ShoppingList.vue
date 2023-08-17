@@ -217,22 +217,21 @@ export default {
         el.selected = false;
       });
     },
+    deleteOneLocal(){
+      let tempShoppingList = []
+      this.shoppingList.forEach((el, index)=>{
+        if(!this.selectedList.includes(index.toString())){
+          tempShoppingList.push(el)
+        }
+      })
+      localStorage.setItem("shoppingList", JSON.stringify(tempShoppingList));
+    },
     deleteOne(){
       let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
       let promises = [];
       tempShoppingList.forEach((el, index)=>{
         if(this.selectedList.includes(index.toString())){
           const p = new Promise((resolve, reject) => {
-            if(window.foodManagerDemo === true){
-              let shoppingList = localStorage.getItem("shoppingList");
-              if(shoppingList){
-                shoppingList = JSON.parse(shoppingList);
-                shoppingList.splice(index, 1)
-                localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
-                this.shoppingList = shoppingList
-                resolve()
-              }
-            } else{
               supabase
                 .from('food')
                 .delete()
@@ -245,8 +244,6 @@ export default {
                   console.log(err);
                   reject()
                 })
-            }
-
           })
           promises.push(p);
         }
@@ -255,21 +252,38 @@ export default {
     },
     manageMultipleDelete(){
       let vue = this;
-      this.deleteOne().then(()=>{
+      if(window.foodManagerDemo){
+        this.deleteOneLocal()
         vue.panelDelete = false;
-        vue.popupMessage = `${vue.selectedList.length} elementi eliminati correttamente`;
-        vue.popupType = "success";
-        vue.triggerPopup = true;
-
-        vue.selectedList = [];
-
-        this.getShoppingList().then((data)=>{
-          vue.shoppingList = data;
-          vue.shoppingList.forEach(el=>{
-            el.selected = false;
+          vue.popupMessage = `${vue.selectedList.length} elementi eliminati correttamente`;
+          vue.popupType = "success";
+          vue.triggerPopup = true;
+  
+          vue.selectedList = [];
+  
+          this.getShoppingList().then((data)=>{
+            vue.shoppingList = data;
+            vue.shoppingList.forEach(el=>{
+              el.selected = false;
+            })
           })
-        })
-      });
+      } else{
+        this.deleteOne().then(()=>{
+          vue.panelDelete = false;
+          vue.popupMessage = `${vue.selectedList.length} elementi eliminati correttamente`;
+          vue.popupType = "success";
+          vue.triggerPopup = true;
+  
+          vue.selectedList = [];
+  
+          this.getShoppingList().then((data)=>{
+            vue.shoppingList = data;
+            vue.shoppingList.forEach(el=>{
+              el.selected = false;
+            })
+          })
+        });
+      }
     },
     // multipleDelete(){
     //   let tempShoppingList = JSON.parse(JSON.stringify(this.shoppingList));
