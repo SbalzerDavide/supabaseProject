@@ -107,7 +107,7 @@ export default {
     }
     &.position-bottom{
       position: fixed;
-      bottom: -120px;
+      bottom: -140px;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 1;
