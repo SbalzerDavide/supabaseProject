@@ -335,6 +335,18 @@ export default {
       let vue = this;
       if(window.foodManagerDemo === true){
         // popup operazione andata a buon fine
+        let storage = localStorage.getItem("storage");
+        if(storage){
+          storage = JSON.parse(storage);
+        }
+        let elIndex;
+        storage.forEach((el, index)=>{
+          if(el.id === this.actualEl.id){
+            elIndex = index
+          }
+        })
+        storage.splice(elIndex, 1);
+        localStorage.setItem("storage", JSON.stringify(storage));
         vue.popupMessage = `${vue.actualEl.name} contrassegnato come mangiato!`
         vue.popupType = "success";
         vue.triggerPopup = true;
@@ -386,6 +398,28 @@ export default {
         garbageDate: new Date()
       }
       if(window.foodManagerDemo === true){
+        let storage = localStorage.getItem("storage");
+        if(storage){
+          storage = JSON.parse(storage);
+        }
+        let elIndex;
+        storage.forEach((el, index)=>{
+          if(el.id === this.actualEl.id){
+            elIndex = index
+          }
+        })
+        storage.splice(elIndex, 1);
+        localStorage.setItem("storage", JSON.stringify(storage));
+
+        // inserirso elemento in garbage
+        let garbage = localStorage.getItem("garbage");
+        if(garbage){
+          garbage = JSON.parse(garbage);
+        } else{
+          garbage = []
+        };
+        garbage.push(garbageFood)
+        localStorage.setItem("garbage", JSON.stringify(garbage));
         // popup operazione andata a buon fine
         vue.popupMessage = `${garbageFood.name} buttato!`
         vue.popupType = "success";
@@ -446,12 +480,15 @@ export default {
           category: this.actualEl.category
         }
         if(window.foodManagerDemo === true){
-          let storage = localStorage.getItem("shoppingList");
-          if(storage){
-            storage = JSON.parse(storage);
-            storage.push(toShopping);
-            localStorage.setItem("shoppingList", storage);
-          } 
+          let shoppingList = localStorage.getItem("shoppingList");
+          if(shoppingList){
+            shoppingList = JSON.parse(shoppingList);
+          } else{
+            shoppingList = []
+          }
+          shoppingList.push(toShopping);
+          localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+          resolve();
         } else{
           supabase
             .from("food")

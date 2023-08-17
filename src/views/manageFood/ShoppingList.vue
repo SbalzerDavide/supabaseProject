@@ -326,21 +326,35 @@ export default {
       if(window.foodManagerDemo === true){
         let storage = localStorage.getItem("storage");
         if(storage){
-          storage = JSON.parse(storage);
-          let toStore = this.actualEl;
-          toStore.deadline= this.deadlineValue
-          toStore.getShoppingList = false
-          storage.push(toStore);
-          localStorage.setItem("storage", JSON.stringify(storage))
-          vue.selectedList.splice(0, 1);  
-          // messaggi popup per avvenuto salavatggio
-          vue.popupMessage = `Alimento correttamente spostato in ${toStore.storage}`;
-          vue.popupType = "success";
-          vue.triggerPopup = true;
-
-          vue.managePanel();
-
+          storage = JSON.parse(storage);          
+        } else{
+          storage = []
         }
+        // tolgo elemento da shopping list
+        let shoppingList = localStorage.getItem("shoppingList");
+        if(storage){
+          shoppingList = JSON.parse(shoppingList);          
+        }
+        let toStoreIndex;
+        shoppingList.forEach((el, index)=>{
+          if(el.id === this.actualEl.id){
+            toStoreIndex = index;
+          }
+        })
+        shoppingList.splice(toStoreIndex, 1);
+        localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+        let toStore = this.actualEl;
+        toStore.deadline= this.deadlineValue
+        toStore.getShoppingList = false
+        storage.push(toStore);
+        localStorage.setItem("storage", JSON.stringify(storage))
+        vue.selectedList.splice(0, 1);  
+        // messaggi popup per avvenuto salavatggio
+        vue.popupMessage = `Alimento correttamente spostato in ${toStore.storage}`;
+        vue.popupType = "success";
+        vue.triggerPopup = true;
+
+        vue.managePanel();
       } else{
         supabase
           .from("food")

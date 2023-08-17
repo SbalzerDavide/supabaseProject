@@ -185,6 +185,16 @@ export default {
       } else if(filter == "Mese"){
         this.period = `${month} / ${year}`;
       }
+      this.getGarbageList().then((data)=>{
+        if(data != null && data.length > 0){
+          this.garbageList = data;
+          this.garbageList.forEach(el=>{
+            el.selected = false;
+          })
+        } else{
+          this.garbageList = []
+        }
+      })
     } , 
     getGarbageList(){
       return new Promise((resolve, reject)=>{
@@ -203,20 +213,50 @@ export default {
             to = `${this.activePeriod.year}-${this.activePeriod.month + 2}-01`;
           }
         }
-        supabase
-          .from("food")
-          .select()
-          .eq('user_id', vue.user.id)
-          .eq('garbage', true)
-          .lt('garbageDate', to)
-          .gt('garbageDate', from)
-          .order("garbageDate", {ascending: false})
-          .then((data)=>{
-            resolve(data.data);
+        if(window.foodManagerDemo === true){
+          let garbage = localStorage.getItem("garbage");
+          if(garbage){
+            garbage = JSON.parse(garbage);
+          } else{
+            garbage = []
+          }
+          // fare qui filtro 
+          let filteredGarbage = [];
+          garbage.forEach((el, index)=>{
+            let date = new Date(el.garbageDate);
+            let year = date.getFullYear();
+            let month = date.getMonth();
+            let day = date.getUTCDate();
+            el.garbageDate = `${year} - ${month + 1} - ${day}`
+            if(this.activeFilter === "Anno"){
+              if(year == this.activePeriod.year){
+                filteredGarbage.push(el)
+              }
+            } else if(this.activeFilter === "Mese"){
+              if(year == this.activePeriod.year){
+                if(this.activePeriod.month === month){
+                  filteredGarbage.push(el)
+                }
+              }
+            }
           })
-          .catch((err)=>{
-            reject(err);
-          })
+          resolve(filteredGarbage);
+        } else{
+          supabase
+            .from("food")
+            .select()
+            .eq('user_id', vue.user.id)
+            .eq('garbage', true)
+            .lt('garbageDate', to)
+            .gt('garbageDate', from)
+            .order("garbageDate", {ascending: false})
+            .then((data)=>{
+              resolve(data.data);
+            })
+            .catch((err)=>{
+              reject(err);
+            })
+        }
       })
     },
 
