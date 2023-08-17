@@ -227,7 +227,7 @@ export default {
             let year = date.getFullYear();
             let month = date.getMonth();
             let day = date.getUTCDate();
-            el.garbageDate = `${year} - ${month + 1} - ${day}`
+            el.garbageDate = `${year}-${month + 1}-${day}`
             if(this.activeFilter === "Anno"){
               if(year == this.activePeriod.year){
                 filteredGarbage.push(el)
