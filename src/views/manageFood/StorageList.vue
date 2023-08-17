@@ -417,7 +417,7 @@ export default {
           garbage = JSON.parse(garbage);
         } else{
           garbage = []
-        };
+        }
         garbage.push(garbageFood)
         localStorage.setItem("garbage", JSON.stringify(garbage));
         // popup operazione andata a buon fine

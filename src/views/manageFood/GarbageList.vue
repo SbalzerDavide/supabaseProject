@@ -222,7 +222,7 @@ export default {
           }
           // fare qui filtro 
           let filteredGarbage = [];
-          garbage.forEach((el, index)=>{
+          garbage.forEach((el)=>{
             let date = new Date(el.garbageDate);
             let year = date.getFullYear();
             let month = date.getMonth();
